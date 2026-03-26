@@ -409,6 +409,7 @@ function rView(){if(!S.cp)return el("div");var cp=S.cp;var root=el("div");
 
 function render(){document.body.setAttribute("data-theme",S.theme);var app=document.getElementById("app");app.innerHTML="";if(S.screen==="home")app.appendChild(rHome());else if(S.screen==="create")app.appendChild(rCreate());else if(S.screen==="edit")app.appendChild(rEdit());else if(S.screen==="view")app.appendChild(rView())}
 load();render();
+if('serviceWorker' in navigator){navigator.serviceWorker.register('./serviceWorker.js')}
 </script>
 </body>
 </html>
