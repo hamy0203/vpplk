@@ -1,6 +1,5 @@
 var CACHE_NAME = 'plm-digital-v2';
 var ASSETS = [
-  './',
   './PLM-digital v2.1 260326.html'
 ];
 
