@@ -1,7 +1,7 @@
 var CACHE_NAME = 'plm-digital-v2';
 var ASSETS = [
   './',
-  './PLM-digital v2.0 260323.html'
+  './PLM-digital v2.1 260326.html'
 ];
 
 self.addEventListener('install', function(e) {
