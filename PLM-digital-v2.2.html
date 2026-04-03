@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Phòng Phân tích Nông hoá — Phiếu lấy mẫu đất</title>
+<style>
+:root{--bg:#E2F0D9;--text:#00682B;--cardBg:#fff;--cardText:#222;--inputBg:#fff;--inputText:#000;--inputBorder:#ccc;--accent:#00682B;--accentText:#fff;--headerBg:#00682B;--headerText:#fff;--danger:#d32f2f;--muted:#666;--divider:#ccc;--shadow:0 1px 3px rgba(0,0,0,0.12);--toggleBg:#ccc;--toggleActive:#00682B}
+[data-theme="dark"]{--bg:#1A1A2E;--text:#E0E0E0;--cardBg:#2A2A3E;--cardText:#E0E0E0;--inputBg:#3A3A4E;--inputText:#E0E0E0;--inputBorder:#555;--accent:#4CAF50;--accentText:#fff;--headerBg:#0F0F1E;--headerText:#E0E0E0;--danger:#ef5350;--muted:#999;--divider:#444;--shadow:0 1px 3px rgba(0,0,0,0.4);--toggleBg:#555;--toggleActive:#4CAF50}
+[data-theme="docsach"]{--bg:#E8D1A7;--text:#743014;--cardBg:#F5E6D0;--cardText:#743014;--inputBg:#FFF8F0;--inputText:#743014;--inputBorder:#C4A882;--accent:#743014;--accentText:#F8EFDA;--headerBg:#743014;--headerText:#F8EFDA;--danger:#d32f2f;--muted:#8B6914;--divider:#C4A882;--shadow:0 1px 3px rgba(0,0,0,0.12);--toggleBg:#C4A882;--toggleActive:#743014}
+[data-theme="matcha"]{--bg:#5C6B3D;--text:#F8EFDA;--cardBg:#F5F0E0;--cardText:#2A3518;--inputBg:#FFFDF5;--inputText:#2A3518;--inputBorder:#7A8B5A;--accent:#D4C5A0;--accentText:#2A3518;--headerBg:#4D5C30;--headerText:#F8EFDA;--danger:#ef5350;--muted:#2F3A1D;--divider:#B8C896;--shadow:0 1px 3px rgba(0,0,0,0.2);--toggleBg:#8B9A6A;--toggleActive:#5C6B3D}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',Roboto,sans-serif;font-size:15px;line-height:1.5;background:var(--bg);color:var(--text);max-width:480px;margin:0 auto;min-height:100vh;padding-bottom:80px;overscroll-behavior:none}
+.header{background:var(--headerBg);color:var(--headerText);padding:12px 16px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.header-title{font-weight:700;font-size:14px;flex:1;text-align:center}
+.header-btn{background:none;border:none;color:var(--headerText);font-size:14px;cursor:pointer;padding:4px;white-space:nowrap;display:flex;align-items:center;gap:2px}
+.header-btn svg{width:18px;height:18px}
+.body-content{padding:12px 16px}
+.card{background:var(--cardBg);color:var(--cardText);border-radius:10px;padding:14px;margin-bottom:10px;box-shadow:var(--shadow)}
+.card-title{font-weight:700;font-size:16px}
+.label{font-size:13px;font-weight:600;color:var(--muted);margin-bottom:2px;margin-top:10px;display:block}
+input.fi,select.fi{width:100%;padding:10px 12px;border:1px solid var(--inputBorder);border-radius:8px;font-size:15px;background:var(--inputBg);color:var(--inputText);box-sizing:border-box}
+.btn{padding:12px 20px;border:none;border-radius:8px;font-size:15px;font-weight:600;cursor:pointer;width:100%;margin-top:10px}
+.btn-p{background:var(--accent);color:var(--accentText)}.btn-o{background:transparent;border:2px solid var(--accent);color:var(--accent)}.btn-d{background:var(--danger);color:#fff}
+.btn-sm{width:auto;padding:6px 12px;font-size:12px;margin-top:0}
+.fab{position:fixed;bottom:20px;right:20px;width:56px;height:56px;border-radius:28px;background:var(--accent);color:var(--accentText);border:none;font-size:28px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.3);z-index:50;display:flex;align-items:center;justify-content:center}
+.progress{display:flex;justify-content:center;gap:6px;padding:10px 0;font-size:12px;font-weight:600;position:sticky;top:48px;z-index:99;background:var(--bg)}
+.p-step{padding:6px 10px;border-radius:20px;border:1px solid var(--divider);background:var(--cardBg);color:var(--muted);cursor:pointer}
+.p-step.active{background:var(--accent);color:var(--accentText);border-color:var(--accent)}
+.p-step.done{background:color-mix(in srgb,var(--accent) 20%,transparent);color:var(--accent);border-color:var(--accent)}
+.toggle{width:44px;height:24px;border-radius:12px;background:var(--toggleBg);position:relative;cursor:pointer;border:none;padding:0;transition:background 0.2s;display:inline-block;vertical-align:middle}
+.toggle.on{background:var(--toggleActive)}.toggle-knob{width:20px;height:20px;border-radius:10px;background:#fff;position:absolute;top:2px;left:2px;transition:left 0.2s}.toggle.on .toggle-knob{left:22px}
+.w5{font-size:11px;font-style:italic;color:var(--danger);text-align:right;margin-top:2px}
+.row{display:flex;gap:8px}.flex1{flex:1}
+.chip{display:inline-flex;align-items:center;gap:4px;background:color-mix(in srgb,var(--accent) 15%,transparent);color:var(--accent);border-radius:12px;padding:2px 10px;font-size:12px;margin:2px 4px 2px 0}
+.chip-x{background:none;border:none;color:var(--accent);cursor:pointer;font-size:14px;padding:0;line-height:1}
+.collapse-header{display:flex;justify-content:space-between;align-items:center;cursor:pointer}
+.danger-link{background:none;border:none;color:var(--danger);font-size:13px;margin-top:8px;cursor:pointer}
+.empty-state{text-align:center;padding:40px;color:var(--muted)}
+.ro-field{margin-bottom:4px}.ro-label{font-size:12px;color:#888}.ro-val{font-size:14px}
+.auto-calc{font-size:13px;color:var(--muted);padding:4px 0}
+.multi-box{cursor:pointer;min-height:42px;display:flex;flex-wrap:wrap;align-items:center;gap:2px}
+.multi-dd{position:absolute;top:100%;left:0;right:0;background:var(--inputBg);border:1px solid var(--inputBorder);border-radius:8px;z-index:10;max-height:180px;overflow-y:auto;box-shadow:0 4px 12px rgba(0,0,0,0.15)}
+.multi-item{padding:10px 12px;cursor:pointer;display:flex;align-items:center;gap:8px;border-bottom:1px solid rgba(128,128,128,0.2)}
+.multi-chk{width:18px;height:18px;border-radius:4px;border:2px solid #999;display:flex;align-items:center;justify-content:center;font-size:12px;color:#fff}.multi-chk.on{background:var(--accent)}
+.hidden{display:none}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+// ===== SVG ICONS (Lucide) =====
+var IC={
+  home:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>',
+  eye:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>',
+  edit:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>',
+  pin:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>',
+  list:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>',
+  palette:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r="0.5" fill="currentColor"/><circle cx="17.5" cy="10.5" r="0.5" fill="currentColor"/><circle cx="8.5" cy="7.5" r="0.5" fill="currentColor"/><circle cx="6.5" cy="12" r="0.5" fill="currentColor"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/></svg>',
+  globe:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>',
+  plus:'<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>',
+  clip:'<svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>'
+};
+function icon(name){var sp=document.createElement("span");sp.innerHTML=IC[name]||"";sp.style.display="inline-flex";sp.style.alignItems="center";return sp}
+
+// ===== i18n =====
+var LANG={
+  vi:{
+    appTitle:"Phòng Phân tích Nông hoá — Phiếu lấy mẫu đất",
+    newForm:"Tạo phiếu mới",soKHLM:"Số Kế hoạch lấy mẫu",soKTV:"Số phiếu Kiểm tra vườn",
+    soPhieu:"Số Phiếu lấy mẫu đất",ngayLap:"Ngày lập",khuLienHop:"Khu liên hợp",
+    tiepTuc:"Tiếp tục",nhapTay:"Nhập tay",taiLenCSV:"Tải lên CSV",
+    hoiImport:"Bạn có muốn tải lên file data vườn/thửa?\n\nOK = Tải lên CSV\nCancel = Nhập tay",
+    trungKHLM:"Số phiếu kế hoạch đã tồn tại.",nhapKHLM:"Vui lòng nhập số Kế hoạch lấy mẫu.",
+    thongTinChung:"Thông tin chung",mauTheoKH:"Mẫu theo kế hoạch",mauCaBiet:"Mẫu cá biệt",
+    thongTinPhieu:"Thông tin phiếu",thua:"Thửa",themThua:"+Thêm thửa",
+    nhanSu:"Nhân sự",themNS:"+Thêm nhân sự",congCu:"Công cụ",themCC:"+Thêm công cụ",
+    hoTen:"Họ và tên",chucDanh:"Chức danh",thuaPhuTrach:"Thửa phụ trách",
+    tenCongCu:"Tên công cụ",soLuong:"Số lượng",donVi:"Đơn vị",
+    tiepMau:"Tiếp → Mẫu theo kế hoạch",tiepCB:"Tiếp → Mẫu cá biệt",quayLai:"← Quay lại",
+    luuPhieu:"Lưu phiếu",daNN:"Đã nhập",mau:"mẫu",chuyenThua:"Chuyển tới thửa:",
+    kinhDo:"Kinh độ",viDo:"Vĩ độ",doSau:"Độ sâu (cm)",khoiLuong:"Khối lượng (kg)",
+    baoQuan:"Bảo quản",datTuoi:"Đất tươi",nguoiTH:"Người thực hiện",ngayLay:"Ngày lấy mẫu",
+    gioHT:"Giờ hoàn thành",ghiChu:"Ghi chú",xoaMau:"Xóa mẫu này",xoaThua:"Xóa thửa này",xoa:"Xóa",
+    themMau:"+Thêm mẫu",themMauCB:"+Thêm mẫu cá biệt",
+    tongSoMau:"Tổng số lượng mẫu:",tongKL:"Tổng khối lượng (lý thuyết):",giaTriKhac:"Giá trị khác",
+    lech20:"Khối lượng nhập lệch quá 20% so với lý thuyết.",
+    moTaCB:"Mẫu cá biệt: mẫu không nằm trong kế hoạch",
+    xuatCSV:"Xuất CSV",xuatBM:"Xuất biểu mẫu",trangChu:"Trang chủ",sua:"Sửa",
+    chuaCo:"Chưa có phiếu nào.",nhanPlus:"Nhấn + để tạo phiếu mới.",chuaCoMa:"Chưa có mã",
+    thuoc:"Thuộc",xoaPhieu1:"Khuyến nghị đã lưu file CSV của phiếu này trước khi xóa.",
+    xoaPhieu2:"Bạn chắc chắn muốn xóa phiếu? Bước này không thể hoàn tác.",
+    chuaCoData:"Chưa có dữ liệu mẫu.",loiXuat:"Lỗi xuất biểu mẫu: ",
+    xoaThuaData:"Dữ liệu thửa đã nhập sẽ bị xóa. Tiếp tục?",
+    nhapThuaTT:"Vui lòng nhập thông tin vườn/thửa để tiếp tục.",
+    tenThua:"Tên thửa",maThuaQTSX:"Mã thửa trên phần mềm QTSX",
+    xiNghiep:"Xí nghiệp",nongTruong:"Nông trường",lo:"Lô",
+    loaiCay:"Loại cây trồng",thoiDiemSX:"Thời điểm SX (tháng tuổi)",dienTich:"Diện tích (ha)",
+    soLuongMau:"Số lượng mẫu",tongKLMauKH:"Tổng khối lượng mẫu theo kế hoạch: ",
+    tongKLMauCB:"Tổng khối lượng mẫu cá biệt: ",
+    placeholderBQ:"VD: Túi zip, Túi vải...",placeholderKHLM:"KHLM-KM-26-001",placeholderKTV:"KTV-KM-26-001-01",
+    backup:"Vui lòng tải xuống file CSV/Word để backup dữ liệu sau mỗi phiên làm việc.",
+  },
+  en:{
+    appTitle:"Agrochemical Analysis Lab — Soil Sampling Form",
+    newForm:"Create new form",soKHLM:"Sampling Plan No.",soKTV:"Garden Inspection No.",
+    soPhieu:"Sampling Form No.",ngayLap:"Date created",khuLienHop:"Area",
+    tiepTuc:"Continue",nhapTay:"Manual input",taiLenCSV:"Upload CSV",
+    hoiImport:"Do you want to upload a plot data file?\n\nOK = Upload CSV\nCancel = Manual input",
+    trungKHLM:"This plan number already exists.",nhapKHLM:"Please enter the Sampling Plan No.",
+    thongTinChung:"General info",mauTheoKH:"Planned samples",mauCaBiet:"Ad-hoc samples",
+    thongTinPhieu:"Form info",thua:"Plot",themThua:"+Add plot",
+    nhanSu:"Personnel",themNS:"+Add personnel",congCu:"Tools",themCC:"+Add tool",
+    hoTen:"Full name",chucDanh:"Title",thuaPhuTrach:"Assigned plots",
+    tenCongCu:"Tool name",soLuong:"Quantity",donVi:"Unit",
+    tiepMau:"Next → Planned samples",tiepCB:"Next → Ad-hoc samples",quayLai:"← Back",
+    luuPhieu:"Save form",daNN:"Entered",mau:"samples",chuyenThua:"Jump to plot:",
+    kinhDo:"Longitude",viDo:"Latitude",doSau:"Depth (cm)",khoiLuong:"Weight (kg)",
+    baoQuan:"Storage",datTuoi:"Fresh soil",nguoiTH:"Operator",ngayLay:"Sampling date",
+    gioHT:"Completion time",ghiChu:"Notes",xoaMau:"Delete this sample",xoaThua:"Delete this plot",xoa:"Delete",
+    themMau:"+Add sample",themMauCB:"+Add ad-hoc sample",
+    tongSoMau:"Total samples:",tongKL:"Total weight (theoretical):",giaTriKhac:"Override value",
+    lech20:"Weight differs more than 20% from theoretical.",
+    moTaCB:"Ad-hoc samples: samples not in the plan",
+    xuatCSV:"Export CSV",xuatBM:"Export form",trangChu:"Home",sua:"Edit",
+    chuaCo:"No forms yet.",nhanPlus:"Tap + to create a new form.",chuaCoMa:"No code yet",
+    thuoc:"Plan",xoaPhieu1:"Recommended: save CSV before deleting.",
+    xoaPhieu2:"Do you want to delete this form? This action cannot be undone.",
+    chuaCoData:"No sample data.",loiXuat:"Export error: ",
+    xoaThuaData:"Plot data will be deleted. Continue?",
+    nhapThuaTT:"Please enter plot info to continue.",
+    tenThua:"Plot name",maThuaQTSX:"THAGRI BANANA's plot code",
+    xiNghiep:"Enterprise",nongTruong:"Farm",lo:"Block",
+    loaiCay:"Crop type",thoiDiemSX:"Crop age (months)",dienTich:"Area (ha)",
+    soLuongMau:"Number of samples",tongKLMauKH:"Total planned sample weight: ",
+    tongKLMauCB:"Total ad-hoc sample weight: ",
+    placeholderBQ:"e.g. Zip bag, Cloth bag...",placeholderKHLM:"KHLM-KM-26-001",    placeholderKTV:"KTV-KM-26-001-01",
+    khongTimThay:"No plots found for area ",
+    backup:"Please download CSV/Word files after each session to backup your data."
+  },
+  kh:null,la:null
+};
+function T(key){var l=LANG[S.lang]||LANG.vi;return(l&&l[key])||LANG.vi[key]||key}
+
+// ===== STATE =====
+var DB="thaco_v5";
+var S={theme:"standard",lang:"vi",ro:false,phieus:[],cp:null,screen:"home",step:1,pinnedId:null};
+var themeList=["standard","dark","docsach","matcha"];
+var themeIcons={"standard":"☀","dark":"☽","docsach":"▤","matcha":"❋"};
+var langList=["vi","en","kh","la"];
+function nextTheme(){var i=themeList.indexOf(S.theme);S.theme=themeList[(i+1)%themeList.length];render();save()}
+function nextLang(){var i=langList.indexOf(S.lang);S.lang=langList[(i+1)%langList.length];render();save()}
+
+function gid(){return Math.random().toString(36).substr(2,9)}
+function xP(k){var m=k.match(/KHLM-(\w+-\d+-\d+)/i);return m?m[1]:null}
+function xK(k){var m=k.match(/KHLM-(\w+)-/i);return m?m[1].toUpperCase():""}
+function pad(v){v=String(v);return v.length<2?"0"+v:v}
+function thuaName(v){if(!v.nong_truong&&!v.lo&&!v.thua)return"";return(v.nong_truong||"")+"/"+(v.lo||"")+"/"+(v.thua||"")}
+function thuaNameFull(v){if(!v.xi_nghiep&&!v.nong_truong&&!v.lo&&!v.thua)return"";return(v.xi_nghiep||"")+"/"+(v.nong_truong||"")+"/"+(v.lo||"")+"/"+(v.thua||"")}
+function save(){try{localStorage.setItem(DB,JSON.stringify({theme:S.theme,lang:S.lang,phieus:S.phieus,pinnedId:S.pinnedId}))}catch(e){}}
+function load(){try{var d=localStorage.getItem(DB);if(d){var p=JSON.parse(d);S.phieus=p.phieus||[];S.theme=p.theme||"standard";S.lang=p.lang||"vi";S.pinnedId=p.pinnedId||null}}catch(e){}}
+
+function el(tag,at,ch){var e=document.createElement(tag);if(at)Object.keys(at).forEach(function(k){if(k==="style"&&typeof at[k]==="object")Object.assign(e.style,at[k]);else if(k.indexOf("on")===0)e.addEventListener(k.substr(2).toLowerCase(),at[k]);else if(k==="className")e.className=at[k];else e.setAttribute(k,at[k])});if(ch!=null){if(Array.isArray(ch))ch.forEach(function(c){if(c!=null){e.appendChild(typeof c==="object"?c:document.createTextNode(String(c)))}});else e.appendChild(typeof ch==="object"?ch:document.createTextNode(String(ch)))}return e}
+function fi(val,cb,at){var inp=el("input",Object.assign({className:"fi",value:val||""},at||{}));inp.addEventListener("input",function(){cb(inp.value);save()});return inp}
+function sel(val,opts,cb,ph){var s=el("select",{className:"fi"});s.appendChild(el("option",{value:""},ph||"-- "+T("thua")+" --"));opts.forEach(function(o){var v=typeof o==="object"?o.value:o;var l=typeof o==="object"?o.label:o;var op=el("option",{value:v},l);if(v===val)op.selected=true;s.appendChild(op)});s.addEventListener("change",function(){cb(s.value)});return s}
+function tog(val,cb){var b=el("button",{className:"toggle"+(val?" on":"")});var knob=el("div",{className:"toggle-knob"});b.appendChild(knob);b.addEventListener("click",function(){val=!val;b.className="toggle"+(val?" on":"");knob.style.left=val?"22px":"2px";cb(val)});return b}
+function msel(opts,seld,cb,ph){var wrap=el("div",{style:{position:"relative"}});var open=false;var box=el("div",{className:"fi multi-box"});var dd=el("div",{className:"multi-dd hidden"});function rbox(){box.innerHTML="";if(seld.length===0)box.appendChild(el("span",{style:{color:"#999"}},ph||"--"));seld.forEach(function(v){box.appendChild(el("span",{className:"chip"},[v,el("button",{className:"chip-x",onClick:function(e){e.stopPropagation();seld=seld.filter(function(x){return x!==v});cb(seld);rbox();rdd()}},"×")]))})}function rdd(){dd.innerHTML="";dd.className=open?"multi-dd":"multi-dd hidden";opts.forEach(function(o){var ck=seld.indexOf(o)>=0;dd.appendChild(el("div",{className:"multi-item",onClick:function(){if(ck)seld=seld.filter(function(x){return x!==o});else seld=seld.concat([o]);cb(seld);rbox();rdd()}},[el("span",{className:"multi-chk"+(ck?" on":"")},ck?"✓":""),el("span",{},o)]))});dd.appendChild(el("div",{style:{padding:"8px",textAlign:"center"}},[el("button",{style:{background:"none",border:"none",color:"var(--accent)",fontWeight:"600",cursor:"pointer"},onClick:function(){open=false;rdd()}},"✕")]))}box.addEventListener("click",function(){open=!open;rdd()});rbox();wrap.appendChild(box);wrap.appendChild(dd);return wrap}
+function ro(l,v){return el("div",{className:"ro-field"},[el("span",{className:"ro-label"},l+": "),el("span",{className:"ro-val"},v||"—")])}
+
+// ===== HEADER BUILDER =====
+function mkHeader(leftEl,title,extras){
+  var hdr=el("div",{className:"header"});
+  hdr.appendChild(leftEl);
+  hdr.appendChild(el("span",{className:"header-title"},title));
+  var right=el("div",{style:{display:"flex",gap:"6px",alignItems:"center"}});
+  right.appendChild(el("button",{className:"header-btn",onClick:nextTheme},icon("palette")));
+  if(extras)extras.forEach(function(x){right.appendChild(x)});
+  right.appendChild(el("button",{className:"header-btn",onClick:nextLang},S.lang.toUpperCase()));
+  hdr.appendChild(right);return hdr;
+}
+
+// ===== EXPORT CSV =====
+function exportCSV(p){
+  if(!p||(p.mau.length===0&&p.mauCaBiet.length===0)){alert(T("chuaCoData"));return}
+  var hd=["So_phieu","Xi_nghiep","Nong_truong","Lo","Thua","Ten_mau","Kinh_do","Vi_do","Do_sau_cm","Khoi_luong_kg","Loai_mau","Bao_quan","Dat_tuoi","Nguoi_thuc_hien","Ngay_lay_mau","Gio_hoan_thanh","Ghi_chu"];
+  var mi={};
+  var allM=p.mau.map(function(m){var v=p.vuonThua.find(function(x){return x.id===m.vuon_id});var vn=v?thuaName(v):"";if(!mi[m.vuon_id])mi[m.vuon_id]=0;mi[m.vuon_id]++;var tenMau=vn?vn+"-"+pad(mi[m.vuon_id]):"";return[p.soPhieu,v?v.xi_nghiep:"",v?v.nong_truong:"",v?v.lo:"",v?v.thua:"",tenMau,m.kinhDo,m.viDo,m.doSau,m.khoiLuong,"Hỗn hợp",m.baoQuan,m.datTuoi?"Yes":"No",m.nguoiLayMau,m.ngayLayMau,m.gioHoanThanh,m.ghiChu]});
+  var cbM=p.mauCaBiet.map(function(m,i){var nm=(m.nong_truong||"")+"/"+(m.lo||"")+"/"+(m.thua||"");var tenMau=nm?(m.boPhan?m.boPhan+"-":"")+nm+"-CB"+pad(i+1):"";return[p.soPhieu,m.xi_nghiep,m.nong_truong,m.lo,m.thua,tenMau,m.kinhDo,m.viDo,m.doSau,m.khoiLuong,"Cá biệt",m.baoQuan,m.datTuoi?"Yes":"No",m.nguoiLayMau,m.ngayLayMau,m.gioHoanThanh,m.ghiChu]});
+  var rows=allM.concat(cbM);var csv=[hd.join(",")].concat(rows.map(function(r){return r.map(function(c){return'"'+c+'"'}).join(",")})).join("\n");
+  var blob=new Blob(["\uFEFF"+csv],{type:"text/csv;charset=utf-8;"});var a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=(p.soPhieu||"phieu")+".csv";document.body.appendChild(a);a.click();document.body.removeChild(a);
+}
+
+// ===== EXPORT WORD =====
+function exportWord(p){
+  if(!p||(p.mau.length===0&&p.mauCaBiet.length===0)){alert(T("chuaCoData"));return}
+  try{
+  var css='body{font-family:"Times New Roman",serif;font-size:12pt;margin:0;padding:20px}table{border-collapse:collapse;width:100%}td,th{border:1px solid #000;padding:4px 6px;text-align:center;vertical-align:middle;font-size:12pt}.nb td,.nb th{border:none}.l{text-align:left}.r{text-align:right}.b{font-weight:bold}.i{font-style:italic}.title{font-size:14pt;font-weight:bold;text-align:center;margin:10px 0}.sc{border:none;width:33%;vertical-align:top;padding:10px;text-align:center;height:80px}.sm{font-size:10pt}';
+  var h='<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="utf-8"><style>'+css+'</style><!--[if gte mso 9]><xml><w:WordDocument><w:View>Print</w:View><w:Zoom>100</w:Zoom><w:DoNotOptimizeForBrowser/></w:WordDocument></xml><![endif]--><style>@page{size:A4 landscape;margin:1.5cm 2cm}</style></head><body>';
+  h+='<div style="margin-bottom:20px;min-height:40px"></div>';
+  h+='<div class="b">CÔNG TY CỔ PHẦN NÔNG NGHIỆP TRƯỜNG HẢI</div>';
+  h+='<div class="b">Phòng Phân tích Nông hoá</div>';
+  h+='<div class="r i sm" style="margin-top:-30px"><i>Mã số: PLM-01<br>Ngày hiệu lực: 01/5/2026</i></div><br>';
+  h+='<div class="title">PHIẾU LẤY MẪU HIỆN TRƯỜNG</div><br>';
+  h+='<table class="nb"><tr><td class="l"><b>Số phiếu:</b> '+(p.soPhieu||'')+'</td><td class="l"><b>Ngày lập:</b> '+(p.ngayLap||'')+'</td></tr>';
+  h+='<tr><td class="l"><b>Khu liên hợp:</b> '+(p.khuLienHop||'')+'</td><td class="l"><b>Thuộc Kế hoạch lấy mẫu số:</b> '+(p.soKHLM||'')+'</td></tr>';
+  h+='<tr><td class="l"><b>Số phiếu Kiểm tra vườn:</b> '+(p.soKTV||'')+'</td><td></td></tr></table><br>';
+  h+='<div class="b">I.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;THÔNG TIN CHUNG</div><br>';
+  h+='<table><thread display:table-header-group><tr><th>STT</th><th>Xí nghiệp</th><th>Nông trường</th><th>Lô</th><th>Thửa</th><th><b>Số điểm lấy mẫu</b><br><i style="font-weight:normal">(không bao gồm mẫu cá biệt)</i></th><th>Mẫu cá biệt</th><th>Người thực hiện</th><th>Chức danh</th><th>Ghi chú</th></tr></thread>';
+  p.vuonThua.forEach(function(v,i){var cb=p.mauCaBiet.filter(function(m){return(m.nong_truong||"")===(v.nong_truong||"")&&(m.lo||"")===(v.lo||"")&&(m.thua||"")===(v.thua||"")}).length;var ns=p.nhanSu.filter(function(n){var vp=Array.isArray(n.vuonPhuTrach)?n.vuonPhuTrach:[];return vp.indexOf(thuaName(v))>=0});h+='<tr><td>'+(i+1)+'</td><td>'+(v.xi_nghiep||'')+'</td><td>'+(v.nong_truong||'')+'</td><td>'+(v.lo||'')+'</td><td>'+(v.thua||'')+'</td><td>'+(v.so_mau||'')+'</td><td>'+(cb>0?'☑ '+pad(cb):'☐')+'</td><td>'+ns.map(function(n){return n.hoTen}).join(', ')+'</td><td>'+ns.map(function(n){return n.chucDanh}).join(', ')+'</td><td></td></tr>'});
+  h+='</table><br><div class="b">II.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CHI TIẾT MẪU ĐÃ LẤY</div><br>';
+  h+='<table><thread display:table-header-group><tr><th>#</th><th><b>Vị trí</b><br><i style="font-weight:normal">(Nông trường/Lô/Thửa)</i></th><th>STT mẫu</th><th><b>STT mẫu cá biệt</b><br><i style="font-weight:normal">(VD: CB01)</i></th><th><b>Độ sâu</b><br><i style="font-weight:normal">(cm)</i></th><th><b>Khối lượng</b><br><i style="font-weight:normal">(kg)</i></th><th>Bảo quản</th><th><b>Mẫu "đất tươi"</b></th><th>Người thực hiện</th><th>Ghi chú</th></tr></thread>';
+  var rn=1,mi={};
+  p.mau.forEach(function(m){var v=p.vuonThua.find(function(x){return x.id===m.vuon_id});var vn=v?thuaName(v):"";if(!mi[m.vuon_id])mi[m.vuon_id]=0;mi[m.vuon_id]++;h+='<tr><td>'+rn+'</td><td>'+vn+'</td><td>'+pad(mi[m.vuon_id])+'</td><td></td><td>'+(m.doSau||'')+'</td><td>'+(m.khoiLuong||'')+'</td><td>'+(m.baoQuan||'')+'</td><td>'+(m.datTuoi?'☑':'☐')+'</td><td>'+(m.nguoiLayMau||'')+'</td><td>'+(m.ghiChu||'')+'</td></tr>';rn++});
+  p.mauCaBiet.forEach(function(m,i){var vn=(m.nong_truong||"")+"/"+(m.lo||"")+"/"+(m.thua||"");var cbLabel=(m.boPhan?m.boPhan+"-":"")+("CB"+pad(i+1));h+='<tr><td>'+rn+'</td><td>'+vn+'</td><td></td><td>'+cbLabel+'</td><td>'+(m.doSau||'')+'</td><td>'+(m.khoiLuong||'')+'</td><td>'+(m.baoQuan||'')+'</td><td>'+(m.datTuoi?'☑':'☐')+'</td><td>'+(m.nguoiLayMau||'')+'</td><td>'+(m.ghiChu||'')+'</td></tr>';rn++});
+  var tm=p.mau.length+p.mauCaBiet.length,tk=p.mau.concat(p.mauCaBiet).reduce(function(a,m){return a+(parseFloat(m.khoiLuong)||0)},0);
+  h+='<tr><td colspan="5" class="l"><b>TỔNG SỐ LƯỢNG MẪU</b> <i>(bao gồm mẫu cá biệt)</i><b>: '+tm+'</b></td><td colspan="5" class="l"><b>TỔNG KHỐI LƯỢNG MẪU</b> <i>(bao gồm mẫu cá biệt) (kg)</i><b>: '+tk.toFixed(2)+'</b></td></tr></table><br><br>';
+  h+='<table><tr><td colspan="3"><b>XÁC NHẬN</b></td></tr><tr><td style="width:33%;height:80px;vertical-align:top;padding:10px"><b>Đội trưởng Thu thập &amp; Xử lí mẫu</b><br><i style="font-weight:normal">(Ký, ghi rõ họ tên)</i></td><td style="width:34%;height:80px;vertical-align:top;padding:10px"><b>Nhân sự kiểm tra vườn</b><br><i style="font-weight:normal">(Ký, ghi rõ họ tên)</i></td><td style="width:33%;height:80px;vertical-align:top;padding:10px"><b>Nhân sự lấy mẫu</b><br><i style="font-weight:normal">(Ký, ghi rõ họ tên)</i></td></tr></table></body></html>';
+    var blob=new Blob(['\ufeff'+h],{type:'application/msword'});var a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=(p.soPhieu||"phieu")+".doc";document.body.appendChild(a);a.click();document.body.removeChild(a);
+  }catch(err){alert(T("loiXuat")+err.message)}
+}
+
+// ===== CSV IMPORT =====
+function doImport(e,isCreate){var file=e.target.files[0];if(!file)return;var reader=new FileReader();reader.onload=function(ev){try{var lines=ev.target.result.split("\n").map(function(l){return l.split(",").map(function(c){return c.trim()})});if(lines.length<2)return;var hd=lines[0];var rows=lines.slice(1).filter(function(r){return r.length>=hd.length&&r[0]});var data=rows.map(function(r){var o={};hd.forEach(function(k,i){o[k]=r[i]||""});return o});S.cp.csvData=data;var klh=xK(S.cp.soKHLM);S.cp.khuLienHop=klh;var filtered=klh?data.filter(function(d){return(d.khu_lien_hop||"").toUpperCase()===klh.toUpperCase()}):data;if(filtered.length===0&&data.length>0){alert(T("khongTimThay")+klh);filtered=data}S.cp.vuonThua=filtered.map(function(d){return{id:gid(),ma_thua_qtsx:d.ma_thua_qtsx||"",xi_nghiep:d.xi_nghiep||"",nong_truong:d.nong_truong||"",lo:d.lo||"",thua:d.thua||"",loai_cay:d.loai_cay||"",dien_tich_ha:d.dien_tich_ha||"",thoi_diem_sx:d.thoi_diem_sx||"",so_mau:d.so_mau||"",do_sau_kh:d.do_sau||"",khoi_luong_kh:d.khoi_luong||""}});if(isCreate){S.step=1;S.screen="edit"}render();save()}catch(err){alert("Error: "+err.message)}};reader.readAsText(file);e.target.value=""}
+
+function genMau(){if(!S.cp)return;var maus=[];S.cp.vuonThua.forEach(function(v){var n=parseInt(v.so_mau)||0;var existing=S.cp.mau.filter(function(m){return m.vuon_id===v.id&&typeof m._gi==="number"});var maxIdx=0;existing.forEach(function(m){if(m._gi>=maxIdx)maxIdx=m._gi+1});existing.slice(0,n).forEach(function(m){maus.push(m)});var needed=n-existing.length;for(var i=0;i<needed;i++){maus.push({id:gid(),_gi:maxIdx+i,vuon_id:v.id,kinhDo:"",viDo:"",doSau:"",khoiLuong:"",baoQuan:"",datTuoi:false,nguoiLayMau:"",ngayLayMau:new Date().toISOString().slice(0,10),gioHoanThanh:"",ghiChu:""})}});var man=S.cp.mau.filter(function(m){return m._man});S.cp.mau=maus.concat(man)}
+function goStep(s){if(s===2)genMau();S.step=s;render();save();window.scrollTo(0,0)}
+function saveHome(){if(S.cp){S.cp.updatedAt=new Date().toISOString();var i=S.phieus.findIndex(function(x){return x.id===S.cp.id});if(i>=0)S.phieus[i]=JSON.parse(JSON.stringify(S.cp));else S.phieus.push(JSON.parse(JSON.stringify(S.cp)))}S.screen="home";S.cp=null;render();save()}
+function rMauFields(m,cp,ct,isCaBiet){
+  var vuon=isCaBiet?null:cp.vuonThua.find(function(x){return x.id===m.vuon_id});
+  var dsKH=vuon?vuon.do_sau_kh:"";
+  var klKH=vuon?vuon.khoi_luong_kh:"";
+  var rg=el("div",{style:{display:"flex",gap:"8px",alignItems:"flex-end",marginTop:"4px"}});
+  function updGPSTitle(){var card=ct.closest(".card");if(card){var titleEl=card.querySelector(".collapse-header span");if(titleEl){var base=titleEl.textContent.replace(" ✓","");titleEl.textContent=base+(m.kinhDo&&m.viDo?" ✓":"");}card.style.opacity=m.kinhDo&&m.viDo?"0.45":"1"}}
+  var dk=el("div",{className:"flex1"});dk.appendChild(el("label",{className:"label"},T("kinhDo")));dk.appendChild(fi(m.kinhDo,function(v){m.kinhDo=v;updGPSTitle();save()}));rg.appendChild(dk);
+  var dv=el("div",{className:"flex1"});dv.appendChild(el("label",{className:"label"},T("viDo")));dv.appendChild(fi(m.viDo,function(v){m.viDo=v;updGPSTitle();save()}));rg.appendChild(dv);
+  var gpsBtn=el("button",{className:"btn btn-p",style:{width:"auto",padding:"10px",marginTop:"0"},onClick:function(){if(!navigator.geolocation){alert("GPS N/A");return}navigator.geolocation.getCurrentPosition(function(pos){var prevKD=m.kinhDo,prevVD=m.viDo;m.kinhDo=pos.coords.longitude.toFixed(6);m.viDo=pos.coords.latitude.toFixed(6);render();save();var undoBtn=document.getElementById("gps-undo-"+m.id);if(undoBtn){undoBtn.style.display=(prevKD||prevVD)?"inline-block":"none";undoBtn.onclick=function(){m.kinhDo=prevKD;m.viDo=prevVD;render();save()}}},function(err){alert("GPS: "+err.message)},{enableHighAccuracy:true,timeout:10000})}});
+  gpsBtn.appendChild(icon("pin"));rg.appendChild(gpsBtn);ct.appendChild(rg);
+  var undoGps=el("button",{id:"gps-undo-"+m.id,className:"danger-link",style:{display:"none",fontSize:"12px",marginTop:"2px"}},T("quayLai")+" GPS");ct.appendChild(undoGps);
+  function calcWarn(m,dsKH,klKH){var dsVal=parseFloat(m.doSau)||0;var klVal=parseFloat(m.khoiLuong)||0;var dsK=parseFloat(dsKH)||0;var klK=parseFloat(klKH)||0;var dsLech=dsK>0&&dsVal>0?Math.abs(dsVal-dsK)/dsK:0;var klLech=klK>0&&klVal>0?Math.abs(klVal-klK)/klK:0;return dsLech>0.2||klLech>0.2}
+  var r3=el("div",{className:"row"});
+  [["doSau","doSau",dsKH],["khoiLuong","khoiLuong",klKH]].forEach(function(x){var d=el("div",{className:"flex1"});d.appendChild(el("label",{className:"label"},T(x[0]))); if(x[2])d.appendChild(el("div",{style:{fontSize:"11px",fontStyle:"italic",color:"var(--muted)",marginBottom:"2px"}},T(x[0]).replace(/\s*\([^)]*\)/,"")+" theo kế hoạch: "+x[2]));
+  d.appendChild(fi(m[x[1]],function(v){m[x[1]]=v;var totEl=document.getElementById("tongKL");if(totEl){var t=S.cp.mau.reduce(function(a,z){return a+(parseFloat(z.khoiLuong)||0)},0);totEl.textContent=t.toFixed(2)+" kg"}
+  var warnEl=document.getElementById("warn20-"+m.id);if(warnEl){var curVuon=isCaBiet?null:cp.vuonThua.find(function(z){return z.id===m.vuon_id});var curDsKH=curVuon?curVuon.do_sau_kh:"";var curKlKH=curVuon?curVuon.khoi_luong_kh:"";var warn=calcWarn(m,curDsKH,curKlKH);warnEl.textContent=warn?"Độ sâu/Khối lượng mẫu lệch hơn 20% so với kế hoạch. Vui lòng thêm Ghi chú (nếu có).":"";warnEl.style.display=warn?"block":"none"}},{inputmode:"numeric"}));r3.appendChild(d)});ct.appendChild(r3);
+  ct.appendChild(el("label",{className:"label"},T("baoQuan")));ct.appendChild(fi(m.baoQuan,function(v){m.baoQuan=v},{placeholder:T("placeholderBQ")}));
+  var tr=el("div",{style:{display:"flex",gap:"16px",marginTop:"10px",alignItems:"center"}});
+  var t1=el("div",{style:{display:"flex",alignItems:"center",gap:"6px"}});t1.appendChild(tog(m.datTuoi,function(v){m.datTuoi=v;save()}));t1.appendChild(el("span",{style:{fontSize:"13px"}},T("datTuoi")));tr.appendChild(t1);ct.appendChild(tr);
+  ct.appendChild(el("label",{className:"label"},T("nguoiTH")));
+  var nsF;if(isCaBiet){nsF=cp.nhanSu.map(function(n){return n.hoTen}).filter(Boolean)}else{var v=cp.vuonThua.find(function(x){return x.id===m.vuon_id});var vn=v?thuaName(v):"";nsF=cp.nhanSu.filter(function(n){var vp=Array.isArray(n.vuonPhuTrach)?n.vuonPhuTrach:[];return!vn||vp.length===0||vp.indexOf(vn)>=0}).map(function(n){return n.hoTen}).filter(Boolean)}
+  ct.appendChild(sel(m.nguoiLayMau,nsF,function(v){m.nguoiLayMau=v;save()},"-- "+T("nguoiTH")+" --"));
+  var r4=el("div",{className:"row"});var dn=el("div",{className:"flex1"});dn.appendChild(el("label",{className:"label"},T("ngayLay")));dn.appendChild(fi(m.ngayLayMau,function(v){m.ngayLayMau=v},{type:"date"}));r4.appendChild(dn);var dg=el("div",{className:"flex1"});dg.appendChild(el("label",{className:"label"},T("gioHT")));dg.appendChild(fi(m.gioHoanThanh,function(v){m.gioHoanThanh=v},{type:"time"}));r4.appendChild(dg);ct.appendChild(r4);
+  ct.appendChild(el("label",{className:"label"},T("ghiChu")));ct.appendChild(fi(m.ghiChu,function(v){m.ghiChu=v}));
+  var showWarn=calcWarn(m,dsKH,klKH);
+  ct.appendChild(el("div",{id:"warn20-"+m.id,style:{fontSize:"11px",fontStyle:"italic",color:"var(--danger)",marginTop:"4px",display:showWarn?"block":"none"}},showWarn?"Độ sâu/Khối lượng mẫu lệch hơn 20% so với kế hoạch. Vui lòng thêm Ghi chú (nếu có).":""));
+}
+
+// ===== HOME =====
+function rHome(){var root=el("div");
+  root.appendChild(mkHeader(el("span"),T("appTitle"),[el("button",{className:"header-btn",onClick:function(){S.ro=!S.ro;render()}},S.ro?icon("eye"):icon("edit"))]));
+  var bd=el("div",{className:"body-content"});
+  if(S.phieus.length===0)bd.appendChild(el("div",{className:"empty-state"},[icon("clip"),el("div",{style:{marginTop:"10px"}},T("chuaCo")),el("div",{style:{fontSize:"13px"}},T("nhanPlus"))]));
+  S.phieus.forEach(function(p){var w=el("div",{style:{marginBottom:"10px"}});var card=el("div",{className:"card",style:{cursor:"pointer",marginBottom:"0"}});card.appendChild(el("div",{className:"card-title"},p.soPhieu||T("chuaCoMa")));
+    var tongMau=(p.mau?p.mau.length:0)+(p.mauCaBiet?p.mauCaBiet.length:0);
+    var done=(p.mau?p.mau.filter(function(m){return m.kinhDo&&m.viDo}).length:0)+(p.mauCaBiet?p.mauCaBiet.filter(function(m){return m.kinhDo&&m.viDo}).length:0);
+    var pct=tongMau>0?Math.round(done/tongMau*100):0;
+    var pctColor=pct===100?"var(--accent)":pct>0?"#e8a700":"var(--muted)";
+    var subRow=el("div",{style:{display:"flex",justifyContent:"space-between",marginTop:"2px"}});
+    subRow.appendChild(el("span",{style:{fontSize:"12px",fontStyle:"italic",color:"var(--muted)"}},T("thuoc")+" "+(p.soKHLM||"...")));
+    subRow.appendChild(el("span",{style:{fontSize:"12px",fontStyle:"italic",color:"var(--muted)"}},p.updatedAt?new Date(p.updatedAt).toLocaleDateString("vi-VN"):""));
+    card.appendChild(subRow);
+    card.appendChild(el("div",{style:{display:"flex",justifyContent:"flex-end",marginTop:"2px"}},[el("span",{style:{fontSize:"12px",fontWeight:"600",color:pctColor}},pct+"% ("+done+"/"+tongMau+")")]));
+    card.appendChild(el("div",{style:{height:"4px",background:"var(--divider)",borderRadius:"2px",marginTop:"4px",overflow:"hidden"}},[el("div",{style:{height:"100%",width:pct+"%",background:pctColor,borderRadius:"2px",transition:"width 0.3s"}})]));
+    card.addEventListener("click",function(){S.cp=JSON.parse(JSON.stringify(p));if(S.ro)S.screen="view";else{S.screen="edit";S.step=1}render()});w.appendChild(card);
+    var acts=el("div",{style:{display:"flex",gap:"6px",marginTop:"6px"}});
+    acts.appendChild(el("button",{className:"btn btn-o btn-sm",onClick:function(){exportCSV(p)}},T("xuatCSV")));
+    acts.appendChild(el("button",{className:"btn btn-p btn-sm",onClick:function(){exportWord(p)}},T("xuatBM")));
+    acts.appendChild(el("button",{className:"btn btn-d btn-sm",onClick:function(){if(!confirm(T("xoaPhieu1")))return;if(!confirm(T("xoaPhieu2")))return;S.phieus=S.phieus.filter(function(x){return x.id!==p.id});render();save()}},T("xoa")));
+    w.appendChild(acts);bd.appendChild(w)});
+  root.appendChild(bd);
+  bd.appendChild(el("div",{style:{textAlign:"center",color:"var(--muted)",fontSize:"12px",padding:"20px 16px",fontStyle:"italic"}},T("backup")));
+  if(!S.ro){var fab=el("button",{className:"fab",onClick:function(){S.cp={id:gid(),soKHLM:"",soKTV:"",soPhieu:"",ngayLap:new Date().toISOString().slice(0,10),khuLienHop:"",vuonThua:[],csvData:[],nhanSu:[],congCu:[],mau:[],mauCaBiet:[],tongKLManual:"",createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()};S.step=0;S.screen="create";render()}});fab.appendChild(icon("plus"));root.appendChild(fab)}
+  return root}
+
+// ===== CREATE =====
+function rCreate(){var root=el("div");
+  var homeBtn=el("button",{className:"header-btn",onClick:function(){S.screen="home";S.cp=null;render()}});homeBtn.appendChild(icon("home"));
+  root.appendChild(mkHeader(homeBtn,T("newForm"),[]));
+  var bd=el("div",{className:"body-content"});
+  bd.appendChild(el("label",{className:"label"},T("soKHLM")));
+  bd.appendChild(fi(S.cp?S.cp.soKHLM:"",function(v){S.cp.soKHLM=v;S.cp.khuLienHop=xK(v);var pf=xP(v);S.cp.soPhieu=pf?"PLM-"+pf:"";S.cp.soKTV=pf?"KTV-"+pf+"-":"";var info=document.getElementById("khlm-info");if(info)info.textContent=T("khuLienHop")+": "+(S.cp.khuLienHop||"—")+" · "+T("soPhieu")+": "+(S.cp.soPhieu||"—");var ktvEl=document.getElementById("ktv-fi");if(ktvEl)ktvEl.value=S.cp.soKTV},{placeholder:T("placeholderKHLM")}));
+  bd.appendChild(el("div",{id:"khlm-info",style:{marginTop:"6px",fontSize:"12px",color:"var(--muted)"}},S.cp&&S.cp.soKHLM?T("khuLienHop")+": "+(S.cp.khuLienHop||"—")+" · "+T("soPhieu")+": "+(S.cp.soPhieu||"—"):""));
+  bd.appendChild(el("label",{className:"label"},T("soKTV")));
+  var ktvInp=fi(S.cp?S.cp.soKTV:"",function(v){S.cp.soKTV=v},{placeholder:T("placeholderKTV")});ktvInp.id="ktv-fi";bd.appendChild(ktvInp);
+  bd.appendChild(el("button",{className:"btn btn-p",style:{marginTop:"20px"},onClick:function(){
+    if(!S.cp||!S.cp.soKHLM){alert(T("nhapKHLM"));return}
+    var isDup=S.phieus.some(function(p){return p.soKHLM===S.cp.soKHLM});
+    if(isDup){alert(T("trungKHLM"));return}
+    if(confirm(T("hoiImport"))){document.getElementById("csv-c").click()}else{S.step=1;S.screen="edit";render()}
+  }},T("tiepTuc")));
+  bd.appendChild(el("input",{type:"file",id:"csv-c",accept:".csv",style:{display:"none"},onChange:function(e){doImport(e,true)}}));
+  root.appendChild(bd);return root}
+
+// ===== CARDS =====
+function rVuon(v){var card=el("div",{className:"card",id:"vuon-"+v.id});var hdr=el("div",{className:"collapse-header"});var titleSpan=el("span",{style:{fontWeight:"600"}},thuaName(v)||T("tenThua"));hdr.appendChild(titleSpan);function updTitle(){titleSpan.textContent=thuaName(v)||T("tenThua")}var col=v._collapsed||false;var arrow=el("span",{style:{fontSize:"18px"}},col?"▸":"▾");hdr.appendChild(arrow);var ct=el("div",{style:{marginTop:"8px",display:col?"none":"block"}});hdr.addEventListener("click",function(){col=!col;v._collapsed=col;ct.style.display=col?"none":"block";arrow.textContent=col?"▸":"▾"});
+  var csv=S.cp.csvData||[];var klh=S.cp.khuLienHop;var filtered=csv.filter(function(d){return!klh||(d.khu_lien_hop||"").toUpperCase()===klh.toUpperCase()});var opts=filtered.map(function(d){return d.ma_thua_qtsx}).filter(Boolean).filter(function(val,idx,arr){return arr.indexOf(val)===idx});
+  ct.appendChild(el("label",{className:"label"},T("maThuaQTSX")));
+  if(opts.length>0){ct.appendChild(sel(v.ma_thua_qtsx,opts,function(val){v.ma_thua_qtsx=val;var m=filtered.find(function(d){return d.ma_thua_qtsx===val});if(m){["xi_nghiep","nong_truong","lo","thua","loai_cay","dien_tich_ha"].forEach(function(k){v[k]=m[k]||""})}render();save()}))}else{ct.appendChild(fi(v.ma_thua_qtsx,function(val){v.ma_thua_qtsx=val}))}
+  [[T("xiNghiep"),"xi_nghiep"],[T("nongTruong"),"nong_truong"]].forEach(function(x){ct.appendChild(el("label",{className:"label"},x[0]));ct.appendChild(fi(v[x[1]],function(val){v[x[1]]=val;updTitle()}))});
+  var r1=el("div",{className:"row"});[[T("lo"),"lo"],[T("thua"),"thua"]].forEach(function(x){var d=el("div",{className:"flex1"});d.appendChild(el("label",{className:"label"},x[0]));d.appendChild(fi(v[x[1]],function(val){v[x[1]]=val;updTitle()}));r1.appendChild(d)});ct.appendChild(r1);
+  ct.appendChild(el("label",{className:"label"},T("loaiCay")));ct.appendChild(fi(v.loai_cay,function(val){v.loai_cay=val}));
+  var r2=el("div",{className:"row"});[[T("thoiDiemSX"),"thoi_diem_sx"],[T("dienTich"),"dien_tich_ha"]].forEach(function(x){var d=el("div",{className:"flex1"});d.appendChild(el("label",{className:"label"},x[0]));d.appendChild(fi(v[x[1]],function(val){v[x[1]]=val}));r2.appendChild(d)});ct.appendChild(r2);
+  ct.appendChild(el("label",{className:"label"},T("soLuongMau")));ct.appendChild(fi(v.so_mau,function(val){v.so_mau=val;var n=parseInt(val)||0;var keptIds=S.cp.mau.filter(function(m){return m.vuon_id===v.id&&typeof m._gi==="number"}).slice(0,n).map(function(m){return m.id});S.cp.mau=S.cp.mau.filter(function(m){return m.vuon_id!==v.id||m._man||keptIds.indexOf(m.id)>=0})},{inputmode:"numeric"}));
+  var rKH=el("div",{className:"row"});
+  var dDS=el("div",{className:"flex1"});dDS.appendChild(el("label",{className:"label"},T("doSau")+" (theo kế hoạch)"));dDS.appendChild(fi(v.do_sau_kh,function(val){v.do_sau_kh=val},{inputmode:"numeric"}));rKH.appendChild(dDS);
+  var dKL=el("div",{className:"flex1"});dKL.appendChild(el("label",{className:"label"},T("khoiLuong")+" (theo kế hoạch)"));dKL.appendChild(fi(v.khoi_luong_kh,function(val){v.khoi_luong_kh=val},{inputmode:"numeric"}));rKH.appendChild(dKL);
+  ct.appendChild(rKH);
+  ct.appendChild(el("button",{className:"danger-link",onClick:function(){S.cp.vuonThua=S.cp.vuonThua.filter(function(x){return x.id!==v.id});render();save()}},T("xoaThua")));
+  card.appendChild(hdr);card.appendChild(ct);return card}
+
+function rNS(n){var card=el("div",{className:"card"});card.appendChild(el("label",{className:"label"},T("hoTen")));card.appendChild(fi(n.hoTen,function(v){n.hoTen=v}));card.appendChild(el("label",{className:"label"},T("chucDanh")));card.appendChild(fi(n.chucDanh,function(v){n.chucDanh=v}));card.appendChild(el("label",{className:"label"},T("thuaPhuTrach")));var vopts=S.cp.vuonThua.map(function(v){return thuaName(v)}).filter(Boolean);var seld=Array.isArray(n.vuonPhuTrach)?n.vuonPhuTrach.slice():[];card.appendChild(msel(vopts,seld,function(v){n.vuonPhuTrach=v;save()}));card.appendChild(el("button",{className:"danger-link",onClick:function(){S.cp.nhanSu=S.cp.nhanSu.filter(function(x){return x.id!==n.id});render();save()}},T("xoa")));return card}
+
+function rCC(c){var card=el("div",{className:"card"});card.appendChild(el("label",{className:"label"},T("tenCongCu")));card.appendChild(fi(c.ten,function(v){c.ten=v}));var r=el("div",{className:"row"});var d1=el("div",{className:"flex1"});d1.appendChild(el("label",{className:"label"},T("soLuong")));d1.appendChild(fi(c.soLuong,function(v){c.soLuong=v},{inputmode:"numeric"}));r.appendChild(d1);var d2=el("div",{className:"flex1"});d2.appendChild(el("label",{className:"label"},T("donVi")));d2.appendChild(fi(c.donVi||"",function(v){c.donVi=v}));r.appendChild(d2);card.appendChild(r);card.appendChild(el("button",{className:"danger-link",onClick:function(){S.cp.congCu=S.cp.congCu.filter(function(x){return x.id!==c.id});render();save()}},T("xoa")));return card}
+
+function rMau(m){var cp=S.cp;var v=cp.vuonThua.find(function(x){return x.id===m.vuon_id});var name=m._man?(m._manName||""):v?thuaName(v):"";var sameVuon=cp.mau.filter(function(x){return x.vuon_id===m.vuon_id});var idx=sameVuon.indexOf(m);var suffix=m._man?"":"-"+pad(typeof m._gi==="number"?m._gi+1:(idx>=0?idx+1:1));var fullName=name?(name+suffix):T("tenThua");var filled=m.kinhDo&&m.viDo;
+  var isPinned=S.pinnedId===m.id;
+  var card=el("div",{className:"card",id:"mau-"+m.id,style:{opacity:filled?"0.45":"1",transition:"opacity 0.3s, box-shadow 0.2s",boxShadow:isPinned?"0 0 0 3px var(--accent)":""}});var hdr=el("div",{className:"collapse-header"});
+  var _pt=null;hdr.addEventListener("touchstart",function(){_pt=setTimeout(function(){S.pinnedId=isPinned?null:m.id;isPinned=!isPinned;card.style.boxShadow=isPinned?"0 0 0 3px var(--accent)":"";save()},3000)},{passive:true});hdr.addEventListener("touchend",function(){clearTimeout(_pt)});hdr.addEventListener("touchcancel",function(){clearTimeout(_pt)});hdr.addEventListener("touchmove",function(){clearTimeout(_pt)});var titleSpan=el("span",{style:{fontWeight:"600",fontSize:"13px"}},fullName+(filled?" ✓":""));hdr.appendChild(titleSpan);var arrow=el("span",{style:{fontSize:"18px"}},"▾");hdr.appendChild(arrow);var ct=el("div",{style:{marginTop:"8px"}});var col=false;hdr.addEventListener("click",function(){col=!col;ct.style.display=col?"none":"block";arrow.textContent=col?"▸":"▾"});
+  ct.appendChild(el("label",{className:"label"},T("thua")));
+  if(m._man){ct.appendChild(fi(m._manName||"",function(val){m._manName=val;titleSpan.textContent=(val||T("tenThua"))+(m.kinhDo&&m.viDo?" ✓":"");save()},{placeholder:T("tenThua")}))}else{ct.appendChild(sel(m.vuon_id,cp.vuonThua.map(function(v){return{value:v.id,label:thuaName(v)}}),function(val){m.vuon_id=val;render();save()}))}
+  rMauFields(m,cp,ct,false);
+  ct.appendChild(el("button",{className:"danger-link",onClick:function(){cp.mau=cp.mau.filter(function(x){return x.id!==m.id});render();save()}},T("xoaMau")));
+  card.appendChild(hdr);card.appendChild(ct);return card}
+
+function rMauCB(m,i){var cp=S.cp;var name=m.nong_truong||m.lo||m.thua?(m.nong_truong||"")+"/"+(m.lo||"")+"/"+(m.thua||""):"";var cbIdx=cp.mauCaBiet.indexOf(m);function cbBaseName(){var nm=m.nong_truong||m.lo||m.thua?(m.nong_truong||"")+"/"+(m.lo||"")+"/"+(m.thua||""):"";var ci=cp.mauCaBiet.indexOf(m);return nm?nm+"-CB"+pad(ci>=0?ci+1:i+1):T("tenThua")}function cbFullName(){return(m.boPhan?m.boPhan+"-":"")+cbBaseName()}var filled=m.kinhDo&&m.viDo;
+  var card=el("div",{className:"card"});var hdr=el("div",{className:"collapse-header"});var titleSpan=el("span",{style:{fontWeight:"600",fontSize:"13px"}},cbFullName()+(filled?" ✓":""));hdr.appendChild(titleSpan);
+  function updCBTitle(){titleSpan.textContent=cbFullName()+(m.kinhDo&&m.viDo?" ✓":"")}
+  var arrow=el("span",{style:{fontSize:"18px"}},"▾");hdr.appendChild(arrow);var ct=el("div",{style:{marginTop:"8px"}});var col=false;hdr.addEventListener("click",function(){col=!col;ct.style.display=col?"none":"block";arrow.textContent=col?"▸":"▾"});
+  ct.appendChild(el("label",{className:"label"},"Bộ phận"));ct.appendChild(sel(m.boPhan||"",["Lá","Quả","Rễ"],function(v){m.boPhan=v;updCBTitle();save()},"-- Bỏ qua --"));
+  [[T("xiNghiep"),"xi_nghiep"],[T("nongTruong"),"nong_truong"]].forEach(function(x){ct.appendChild(el("label",{className:"label"},x[0]));ct.appendChild(fi(m[x[1]],function(v){m[x[1]]=v;updCBTitle()}))});
+  var r0=el("div",{className:"row"});[[T("lo"),"lo"],[T("thua"),"thua"]].forEach(function(x){var d=el("div",{className:"flex1"});d.appendChild(el("label",{className:"label"},x[0]));d.appendChild(fi(m[x[1]],function(v){m[x[1]]=v;updCBTitle()}));r0.appendChild(d)});ct.appendChild(r0);
+  rMauFields(m,cp,ct,true);
+  ct.appendChild(el("button",{className:"danger-link",onClick:function(){cp.mauCaBiet=cp.mauCaBiet.filter(function(x){return x.id!==m.id});render();save()}},T("xoaMau")));
+  card.appendChild(hdr);card.appendChild(ct);return card}
+
+// ===== EDIT =====
+function rEdit(){if(!S.cp)return el("div");var cp=S.cp;var root=el("div");
+  var homeBtn=el("button",{className:"header-btn",onClick:saveHome});homeBtn.appendChild(icon("home"));
+  root.appendChild(mkHeader(homeBtn,cp.soPhieu||T("newForm"),[el("button",{className:"header-btn",onClick:function(){S.ro=true;S._lastStep=S.step;S.screen="view";render()}},icon("eye"))]));
+  var prog=el("div",{className:"progress"});
+  [["① "+T("thongTinChung"),1],["② "+T("mauTheoKH"),2],["③ "+T("mauCaBiet"),3]].forEach(function(x){var cls="p-step";if(S.step===x[1])cls+=" active";else if(S.step>x[1])cls+=" done";prog.appendChild(el("button",{className:cls,onClick:function(){if(x[1]>=2){var ok=cp.vuonThua.length>0&&cp.vuonThua.some(function(v){return v.xi_nghiep||v.nong_truong||v.lo||v.thua});if(!ok){alert(T("nhapThuaTT"));return}}goStep(x[1])}},x[0]))});root.appendChild(prog);
+  var bd=el("div",{className:"body-content"});
+  if(S.step===1){
+    var c=el("div",{className:"card"});c.appendChild(el("div",{style:{fontWeight:"700",marginBottom:"8px"}},T("thongTinPhieu")));
+    c.appendChild(el("label",{className:"label"},T("soPhieu")));c.appendChild(fi(cp.soPhieu,function(v){cp.soPhieu=v}));
+    c.appendChild(el("label",{className:"label"},T("soKTV")));c.appendChild(fi(cp.soKTV||"",function(v){cp.soKTV=v}));
+    c.appendChild(el("label",{className:"label"},T("ngayLap")));c.appendChild(fi(cp.ngayLap,function(v){cp.ngayLap=v},{type:"date"}));
+    c.appendChild(el("label",{className:"label"},T("khuLienHop")));c.appendChild(fi(cp.khuLienHop,function(v){cp.khuLienHop=v}));
+    bd.appendChild(c);
+    var vh=el("div",{style:{fontWeight:"700",marginTop:"16px",marginBottom:"8px",display:"flex",justifyContent:"space-between",alignItems:"center"}});vh.appendChild(el("span",{},T("thua")+" ("+cp.vuonThua.length+")"));vh.appendChild(el("button",{className:"btn btn-o btn-sm",onClick:function(){if(cp.vuonThua.length>0&&!confirm(T("xoaThuaData")))return;document.getElementById("csv-e").click()}},T("taiLenCSV")));bd.appendChild(vh);
+    bd.appendChild(el("input",{type:"file",id:"csv-e",accept:".csv",style:{display:"none"},onChange:function(e){doImport(e,false)}}));
+    cp.vuonThua.forEach(function(v,i){bd.appendChild(rVuon(v,i))});
+    bd.appendChild(el("button",{className:"btn btn-o",style:{marginTop:"4px"},onClick:function(){cp.vuonThua.push({id:gid(),ma_thua_qtsx:"",xi_nghiep:"",nong_truong:"",lo:"",thua:"",loai_cay:"",dien_tich_ha:"",thoi_diem_sx:"",so_mau:"",do_sau_kh:"",khoi_luong_kh:""});render();save()}},T("themThua")));
+    bd.appendChild(el("div",{style:{fontWeight:"700",marginTop:"16px",marginBottom:"8px"}},T("nhanSu")+" ("+cp.nhanSu.length+")"));
+    cp.nhanSu.forEach(function(n){bd.appendChild(rNS(n))});
+    bd.appendChild(el("button",{className:"btn btn-o",style:{marginTop:"4px"},onClick:function(){cp.nhanSu.push({id:gid(),hoTen:"",chucDanh:"",vuonPhuTrach:[]});render();save()}},T("themNS")));
+    bd.appendChild(el("div",{style:{fontWeight:"700",marginTop:"16px",marginBottom:"8px"}},T("congCu")+" ("+(cp.congCu||[]).length+")"));
+    (cp.congCu||[]).forEach(function(c){bd.appendChild(rCC(c))});
+    bd.appendChild(el("button",{className:"btn btn-o",style:{marginTop:"4px"},onClick:function(){if(!cp.congCu)cp.congCu=[];cp.congCu.push({id:gid(),ten:"",soLuong:"",donVi:""});render();save()}},T("themCC")));
+    bd.appendChild(el("button",{className:"btn btn-p",style:{marginTop:"16px"},onClick:function(){var ok=cp.vuonThua.length>0&&cp.vuonThua.some(function(v){return v.xi_nghiep||v.nong_truong||v.lo||v.thua});if(!ok){alert(T("nhapThuaTT"));return}goStep(2)}},T("tiepMau")));
+  }
+  if(S.step===2){
+    var filled=cp.mau.filter(function(m){return m.kinhDo&&m.viDo}).length;
+    bd.appendChild(el("div",{style:{fontSize:"13px",color:"var(--muted)",marginBottom:"10px"}},T("daNN")+" "+filled+" / "+cp.mau.length+" "+T("mau")));
+    var fabList=el("button",{className:"fab",style:{fontSize:"18px"},onClick:function(){var panel=document.getElementById("anchor-panel");if(panel)panel.classList.toggle("hidden")}});fabList.appendChild(icon("list"));bd.appendChild(fabList);
+    var ap=el("div",{id:"anchor-panel",className:"card hidden",style:{position:"fixed",bottom:"84px",right:"20px",width:"280px",maxHeight:"250px",overflowY:"auto",zIndex:"51",boxShadow:"0 4px 16px rgba(0,0,0,0.25)"}});ap.appendChild(el("div",{style:{fontWeight:"700",fontSize:"13px",marginBottom:"6px"}},T("chuyenThua")));
+    cp.vuonThua.forEach(function(v){var hasMDs=cp.mau.filter(function(m){return m.vuon_id===v.id});if(hasMDs.length===0)return;var doneMDs=hasMDs.filter(function(m){return m.kinhDo&&m.viDo}).length;var label=thuaName(v)+" ("+doneMDs+"/"+hasMDs.length+")";var done=doneMDs===hasMDs.length;ap.appendChild(el("div",{style:{padding:"8px 10px",cursor:"pointer",borderBottom:"1px solid var(--divider)",fontSize:"14px",color:done?"var(--accent)":"var(--cardText)"},onClick:function(){var t=document.getElementById("mau-"+hasMDs[0].id);if(t){var hdr=document.querySelector(".header"),prog=document.querySelector(".progress");var offset=(hdr?hdr.offsetHeight:0)+(prog?prog.offsetHeight:0)+8;window.scrollTo({top:t.getBoundingClientRect().top+window.scrollY-offset,behavior:"smooth"});document.getElementById("anchor-panel").classList.add("hidden")}}},label+(done?" ✓":"")))});bd.appendChild(ap);
+    cp.mau.forEach(function(m){bd.appendChild(rMau(m))});
+    bd.appendChild(el("button",{className:"btn btn-o",style:{marginTop:"4px"},onClick:function(){cp.mau.push({id:gid(),_man:true,vuon_id:"",kinhDo:"",viDo:"",doSau:"",khoiLuong:"",baoQuan:"",datTuoi:false,nguoiLayMau:"",ngayLayMau:new Date().toISOString().slice(0,10),gioHoanThanh:"",ghiChu:""});render();save()}},T("themMau")));
+    var tKL=cp.mau.reduce(function(a,m){return a+(parseFloat(m.khoiLuong)||0)},0);var tMan=parseFloat(cp.tongKLManual);var kDev=(tMan&&tKL>0)?Math.abs(tMan-tKL)/tKL:0;
+    var tc=el("div",{className:"card",style:{marginTop:"12px"}});tc.appendChild(el("div",{style:{display:"flex",justifyContent:"space-between",fontSize:"14px"}},[el("span",{},T("tongSoMau")),el("strong",{},String(cp.mau.length))]));tc.appendChild(el("div",{style:{display:"flex",justifyContent:"space-between",fontSize:"14px",marginTop:"4px"}},[el("span",{},T("tongKL")),el("strong",{id:"tongKL"},tKL.toFixed(2)+" kg")]));tc.appendChild(el("label",{className:"label",style:{marginTop:"6px"}},T("giaTriKhac")));var warn5=el("div",{className:"w5",style:{display:kDev>0.2?"block":"none"}},T("lech20"));tc.appendChild(fi(cp.tongKLManual,function(v){cp.tongKLManual=v;var tKLNow=S.cp.mau.reduce(function(a,m){return a+(parseFloat(m.khoiLuong)||0)},0);var tManNow=parseFloat(v);var devNow=(tManNow&&tKLNow>0)?Math.abs(tManNow-tKLNow)/tKLNow:0;warn5.style.display=devNow>0.2?"block":"none"},{inputmode:"numeric"}));tc.appendChild(warn5);bd.appendChild(tc);
+    var nav=el("div",{style:{display:"flex",gap:"8px",marginTop:"12px"}});nav.appendChild(el("button",{className:"btn btn-o",style:{flex:"1"},onClick:function(){goStep(1)}},T("quayLai")));nav.appendChild(el("button",{className:"btn btn-p",style:{flex:"1"},onClick:function(){goStep(3)}},T("tiepCB")));bd.appendChild(nav);
+  }
+  if(S.step===3){
+    bd.appendChild(el("div",{style:{fontSize:"13px",color:"var(--muted)",marginBottom:"10px"}},T("moTaCB")));
+    cp.mauCaBiet.forEach(function(m,i){bd.appendChild(rMauCB(m,i))});
+    bd.appendChild(el("button",{className:"btn btn-o",style:{marginTop:"4px"},onClick:function(){cp.mauCaBiet.push({id:gid(),boPhan:"",xi_nghiep:"",nong_truong:"",lo:"",thua:"",kinhDo:"",viDo:"",doSau:"",khoiLuong:"",baoQuan:"",datTuoi:false,nguoiLayMau:"",ngayLayMau:new Date().toISOString().slice(0,10),gioHoanThanh:"",ghiChu:""});render();save()}},T("themMauCB")));
+    var nav3=el("div",{style:{display:"flex",gap:"8px",marginTop:"12px"}});nav3.appendChild(el("button",{className:"btn btn-o",style:{flex:"1"},onClick:function(){goStep(2)}},T("quayLai")));nav3.appendChild(el("button",{className:"btn btn-p",style:{flex:"1"},onClick:saveHome},T("luuPhieu")));bd.appendChild(nav3);
+  }
+  root.appendChild(bd);return root}
+
+// ===== VIEW =====
+function rView(){if(!S.cp)return el("div");var cp=S.cp;var root=el("div");
+  var homeBtn=el("button",{className:"header-btn",onClick:function(){S.screen="home";S.cp=null;render()}});homeBtn.appendChild(icon("home"));
+  var editBtn=el("button",{className:"header-btn",onClick:function(){S.ro=false;S.step=S._lastStep||1;S.screen="edit";render()}});editBtn.appendChild(icon("edit"));editBtn.appendChild(document.createTextNode(" "+T("sua")));
+  root.appendChild(mkHeader(homeBtn,cp.soPhieu,[editBtn]));
+  var bd=el("div",{className:"body-content"});
+  var c1=el("div",{className:"card"});c1.appendChild(el("div",{style:{fontWeight:"700",marginBottom:"8px"}},T("thongTinPhieu")));
+  [[T("soKHLM"),cp.soKHLM],[T("soPhieu"),cp.soPhieu],[T("soKTV"),cp.soKTV],[T("ngayLap"),cp.ngayLap],[T("khuLienHop"),cp.khuLienHop]].forEach(function(x){c1.appendChild(ro(x[0],x[1]))});bd.appendChild(c1);
+  bd.appendChild(el("div",{style:{fontWeight:"700",marginTop:"12px",marginBottom:"6px"}},T("thua")+" ("+cp.vuonThua.length+")"));
+  cp.vuonThua.forEach(function(v){var c=el("div",{className:"card"});c.appendChild(ro(T("thua"),thuaNameFull(v)));c.appendChild(ro(T("soLuongMau"),v.so_mau));bd.appendChild(c)});
+  bd.appendChild(el("div",{style:{fontWeight:"700",marginTop:"12px",marginBottom:"6px"}},T("nhanSu")+" ("+cp.nhanSu.length+")"));
+  cp.nhanSu.forEach(function(n){var c=el("div",{className:"card"});c.appendChild(ro(T("hoTen"),n.hoTen));c.appendChild(ro(T("chucDanh"),n.chucDanh));c.appendChild(ro(T("thuaPhuTrach"),Array.isArray(n.vuonPhuTrach)?n.vuonPhuTrach.join(", "):n.vuonPhuTrach));bd.appendChild(c)});
+  bd.appendChild(el("div",{style:{fontWeight:"700",marginTop:"12px",marginBottom:"6px"}},T("mauTheoKH")+" ("+cp.mau.length+")"));
+  cp.mau.forEach(function(m){var v=cp.vuonThua.find(function(x){return x.id===m.vuon_id});var vName=v?thuaName(v):"—";var sameV=cp.mau.filter(function(x){return x.vuon_id===m.vuon_id});var idx=sameV.indexOf(m);var suffix="-"+pad(typeof m._gi==="number"?m._gi+1:(idx>=0?idx+1:1));var c=el("div",{className:"card"});c.appendChild(ro(T("thua"),vName+suffix));c.appendChild(ro("GPS",m.kinhDo+", "+m.viDo));c.appendChild(ro(T("doSau")+" / "+T("khoiLuong"),m.doSau+" cm / "+m.khoiLuong+" kg"));c.appendChild(ro(T("baoQuan"),m.baoQuan));bd.appendChild(c)});
+  var tKL=cp.mau.reduce(function(a,m){return a+(parseFloat(m.khoiLuong)||0)},0);
+  bd.appendChild(el("div",{className:"card",style:{marginTop:"8px"}},[el("div",{style:{fontSize:"14px"}},[el("span",{},T("tongKLMauKH")),el("strong",{},tKL.toFixed(2)+" kg")])]));
+  if(cp.mauCaBiet.length>0){
+    bd.appendChild(el("div",{style:{fontWeight:"700",marginTop:"12px",marginBottom:"6px"}},T("mauCaBiet")+" ("+cp.mauCaBiet.length+")"));
+    cp.mauCaBiet.forEach(function(m,i){var c=el("div",{className:"card"});var name=m.nong_truong||m.lo||m.thua?(m.nong_truong||"")+"/"+(m.lo||"")+"/"+(m.thua||""):"";var cbName=name?(m.boPhan?m.boPhan+"-":"")+name+"-CB"+pad(i+1):"—";c.appendChild(ro(T("thua"),cbName));c.appendChild(ro("GPS",m.kinhDo+", "+m.viDo));c.appendChild(ro(T("doSau")+" / "+T("khoiLuong"),m.doSau+" cm / "+m.khoiLuong+" kg"));c.appendChild(ro(T("baoQuan"),m.baoQuan));bd.appendChild(c)});
+    var tKLCB=cp.mauCaBiet.reduce(function(a,m){return a+(parseFloat(m.khoiLuong)||0)},0);
+    bd.appendChild(el("div",{className:"card",style:{marginTop:"8px"}},[el("div",{style:{fontSize:"14px"}},[el("span",{},T("tongKLMauCB")),el("strong",{},tKLCB.toFixed(2)+" kg")])]));
+  }
+  var nav=el("div",{style:{display:"flex",gap:"8px",marginTop:"16px"}});
+  nav.appendChild(el("button",{className:"btn btn-p",style:{flex:"1"},onClick:function(){exportWord(cp)}},T("xuatBM")));
+  bd.appendChild(nav);root.appendChild(bd);return root}
+
+function render(){document.body.setAttribute("data-theme",S.theme);var app=document.getElementById("app");app.innerHTML="";if(S.screen==="home")app.appendChild(rHome());else if(S.screen==="create")app.appendChild(rCreate());else if(S.screen==="edit")app.appendChild(rEdit());else if(S.screen==="view")app.appendChild(rView())}
+function scrollToPinned(){if(!S.pinnedId)return;var t=document.getElementById("mau-"+S.pinnedId);if(!t)return;var hdr=document.querySelector(".header"),prog=document.querySelector(".progress");var offset=(hdr?hdr.offsetHeight:0)+(prog?prog.offsetHeight:0)+8;window.scrollTo({top:t.getBoundingClientRect().top+window.scrollY-offset,behavior:"smooth"})}
+load();render();
+document.addEventListener("visibilitychange",function(){if(document.visibilityState==="visible")scrollToPinned()});
+if('serviceWorker' in navigator){navigator.serviceWorker.register('./serviceWorker.js')}
+</script>
+</body>
+</html>

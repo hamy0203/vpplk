@@ -1,6 +1,7 @@
 var CACHE_NAME = 'plm-digital-v2';
 var ASSETS = [
-  './PLM-digital v2.1 260326.html'
+  './PLM-digital-v2.2.html',
+  './soil-analyzer-v1.0.html'
 ];
 
 self.addEventListener('install', function(e) {

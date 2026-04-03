@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Thử nghiệm máy phân tích đất tại chỗ</title>
+<style>
+:root{--bg:#E2F0D9;--text:#00682B;--cardBg:#fff;--cardText:#222;--inputBg:#fff;--inputText:#000;--inputBorder:#ccc;--accent:#00682B;--accentText:#fff;--headerBg:#00682B;--headerText:#fff;--danger:#d32f2f;--muted:#666;--divider:#ccc;--shadow:0 1px 3px rgba(0,0,0,0.12);--toggleBg:#ccc;--toggleActive:#00682B}
+[data-theme="dark"]{--bg:#1A1A2E;--text:#E0E0E0;--cardBg:#2A2A3E;--cardText:#E0E0E0;--inputBg:#3A3A4E;--inputText:#E0E0E0;--inputBorder:#555;--accent:#4CAF50;--accentText:#fff;--headerBg:#0F0F1E;--headerText:#E0E0E0;--danger:#ef5350;--muted:#999;--divider:#444;--shadow:0 1px 3px rgba(0,0,0,0.4);--toggleBg:#555;--toggleActive:#4CAF50}
+[data-theme="docsach"]{--bg:#E8D1A7;--text:#743014;--cardBg:#F5E6D0;--cardText:#743014;--inputBg:#FFF8F0;--inputText:#743014;--inputBorder:#C4A882;--accent:#743014;--accentText:#F8EFDA;--headerBg:#743014;--headerText:#F8EFDA;--danger:#d32f2f;--muted:#8B6914;--divider:#C4A882;--shadow:0 1px 3px rgba(0,0,0,0.12);--toggleBg:#C4A882;--toggleActive:#743014}
+[data-theme="matcha"]{--bg:#5C6B3D;--text:#F8EFDA;--cardBg:#F5F0E0;--cardText:#2A3518;--inputBg:#FFFDF5;--inputText:#2A3518;--inputBorder:#7A8B5A;--accent:#D4C5A0;--accentText:#2A3518;--headerBg:#4D5C30;--headerText:#F8EFDA;--danger:#ef5350;--muted:#2F3A1D;--divider:#B8C896;--shadow:0 1px 3px rgba(0,0,0,0.2);--toggleBg:#8B9A6A;--toggleActive:#5C6B3D}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',Roboto,sans-serif;font-size:15px;line-height:1.5;background:var(--bg);color:var(--text);max-width:480px;margin:0 auto;min-height:100vh;padding-bottom:80px}
+.header{background:var(--headerBg);color:var(--headerText);padding:12px 16px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.header-title{font-weight:700;font-size:13px;flex:1;text-align:center}
+.header-btn{background:none;border:none;color:var(--headerText);font-size:14px;cursor:pointer;padding:4px;white-space:nowrap;display:flex;align-items:center;gap:2px}
+.header-btn svg{width:18px;height:18px}
+.body-content{padding:12px 16px}
+.card{background:var(--cardBg);color:var(--cardText);border-radius:10px;padding:14px;margin-bottom:10px;box-shadow:var(--shadow)}
+.card-title{font-weight:700;font-size:16px}
+.label{font-size:13px;font-weight:600;color:var(--muted);margin-bottom:2px;margin-top:10px;display:block}
+input.fi,select.fi{width:100%;padding:10px 12px;border:1px solid var(--inputBorder);border-radius:8px;font-size:15px;background:var(--inputBg);color:var(--inputText);box-sizing:border-box}
+.btn{padding:12px 20px;border:none;border-radius:8px;font-size:15px;font-weight:600;cursor:pointer;width:100%;margin-top:10px}
+.btn-p{background:var(--accent);color:var(--accentText)}.btn-o{background:transparent;border:2px solid var(--accent);color:var(--accent)}.btn-d{background:var(--danger);color:#fff}
+.btn-sm{width:auto;padding:6px 12px;font-size:12px;margin-top:0}
+.fab{position:fixed;bottom:20px;right:20px;width:56px;height:56px;border-radius:28px;background:var(--accent);color:var(--accentText);border:none;font-size:28px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.3);z-index:50;display:flex;align-items:center;justify-content:center}
+.progress{display:flex;justify-content:center;gap:6px;padding:10px 0;font-size:12px;font-weight:600;position:sticky;top:48px;z-index:99;background:var(--bg)}
+.p-step{padding:6px 10px;border-radius:20px;border:1px solid var(--divider);background:var(--cardBg);color:var(--muted);cursor:pointer}
+.p-step.active{background:var(--accent);color:var(--accentText);border-color:var(--accent)}
+.p-step.done{background:color-mix(in srgb,var(--accent) 20%,transparent);color:var(--accent);border-color:var(--accent)}
+.toggle{width:44px;height:24px;border-radius:12px;background:var(--toggleBg);position:relative;cursor:pointer;border:none;padding:0;transition:background 0.2s;display:inline-block;vertical-align:middle}
+.toggle.on{background:var(--toggleActive)}.toggle-knob{width:20px;height:20px;border-radius:10px;background:#fff;position:absolute;top:2px;left:2px;transition:left 0.2s}.toggle.on .toggle-knob{left:22px}
+.row{display:flex;gap:8px}.flex1{flex:1}
+.hidden{display:none}
+.ro-field{margin-bottom:4px}.ro-label{font-size:12px;color:#888}.ro-val{font-size:14px}
+.collapse-header{display:flex;justify-content:space-between;align-items:center;cursor:pointer}
+.danger-link{background:none;border:none;color:var(--danger);font-size:13px;margin-top:8px;cursor:pointer}
+.empty-state{text-align:center;padding:40px;color:var(--muted)}
+.photo-grid{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.photo-thumb{width:60px;height:60px;border-radius:6px;object-fit:cover;border:1px solid var(--divider)}
+.photo-item{position:relative;display:inline-block}
+.photo-rm{position:absolute;top:-4px;right:-4px;width:18px;height:18px;border-radius:9px;background:var(--danger);color:#fff;border:none;font-size:11px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1}
+.add-photo-btn{width:60px;height:60px;border-radius:6px;border:2px dashed var(--accent);background:transparent;color:var(--accent);font-size:24px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.retake-card{border-left:3px solid var(--accent);margin-left:12px;margin-top:6px}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+var IC={
+home:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>',
+eye:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>',
+edit:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>',
+pin:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>',
+list:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>',
+palette:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r="0.5" fill="currentColor"/><circle cx="17.5" cy="10.5" r="0.5" fill="currentColor"/><circle cx="8.5" cy="7.5" r="0.5" fill="currentColor"/><circle cx="6.5" cy="12" r="0.5" fill="currentColor"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/></svg>',
+plus:'<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>',
+cam:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>',
+clip:'<svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>'
+};
+function icon(n){var s=document.createElement("span");s.innerHTML=IC[n]||"";s.style.display="inline-flex";s.style.alignItems="center";return s}
+
+// ===== STATE =====
+var DB="soil_analyzer_v1";
+var S={theme:"standard",lang:"vi",ro:false,phieus:[],cp:null,screen:"home",step:1};
+var themeList=["standard","dark","docsach","matcha"];
+var langList=["vi","en"];
+
+function nextTheme(){var i=themeList.indexOf(S.theme);S.theme=themeList[(i+1)%themeList.length];render();save()}
+function nextLang(){var i=langList.indexOf(S.lang);S.lang=langList[(i+1)%langList.length];render();save()}
+function gid(){return Math.random().toString(36).substr(2,9)}
+function pad(v){v=String(v);return v.length<2?"0"+v:v}
+
+// ===== i18n =====
+var LANG={
+vi:{
+appTitle:"Thử nghiệm máy phân tích đất tại chỗ",
+newSession:"Tạo phiên mới",tenPhien:"Tên phiên đo",ngayLap:"Ngày lập",khuLienHop:"Khu liên hợp",
+tiepTuc:"Tiếp tục",taiLenCSV:"Tải lên CSV",nhapTay:"Nhập tay",
+hoiImport:"Bạn có muốn tải lên file danh sách thửa?\n\nOK = Tải lên CSV\nCancel = Nhập tay",
+trungTen:"Tên phiên đã tồn tại.",nhapTen:"Vui lòng nhập tên phiên đo.",
+thongTinChung:"Thông tin chung",diemDoDac:"Điểm đo đạc",
+thongTinPhien:"Thông tin phiên",thua:"Thửa",themThua:"+Thêm thửa",
+tiepDD:"Tiếp → Điểm đo đạc",quayLai:"← Quay lại",luuPhien:"Lưu phiên",
+daNN:"Đã nhập",diem:"điểm",nhayThua:"Nhảy tới thửa:",
+dienTich:"Diện tích (ha)",loaiCay:"Loại cây",thoiDiemSX:"Thời điểm SX (tháng tuổi)",
+tuoiNuoc:"Tưới nước",bonPhan:"Bón phân",
+kinhDo:"Kinh độ",viDo:"Vĩ độ",nguoiTH:"Người thực hiện",ngayLay:"Ngày đo",
+gioHT:"Giờ hoàn thành",ghiChu:"Ghi chú",hinhAnh:"Hình ảnh",doLai:"Đo lại",
+themAnh:"+Thêm ảnh",xoaDiem:"Xóa điểm đo này",xoaThua:"Xóa thửa này",xoa:"Xóa",
+xuatCSV:"Xuất CSV",trangChu:"Trang chủ",sua:"Sửa",
+chuaCo:"Chưa có phiên nào.",nhanPlus:"Nhấn + để tạo phiên mới.",
+xoaPhien1:"Khuyến nghị đã lưu file CSV trước khi xóa.",
+xoaPhien2:"Bạn chắc chắn muốn xóa phiên? Không thể hoàn tác.",
+nhapThuaTT:"Vui lòng nhập thông tin thửa để tiếp tục.",
+tenThua:"Tên thửa",maThuaQTSX:"Mã thửa QTSX",
+xiNghiep:"Xí nghiệp",nongTruong:"Nông trường",lo:"Lô",
+backup:"Vui lòng tải xuống file CSV để backup dữ liệu sau mỗi phiên làm việc.",
+tuoiOpt1:"Đang tưới nước",tuoiOpt2:"Mới tưới nước (còn giọt đọng)",tuoiOpt3:"Đất ẩm vừa",tuoiOpt4:"Đất khô",tuoiOpt5:"Không rõ",
+bonOpt1:"Mới bón phân",bonOpt2:"Không bón phân",bonOpt3:"Không rõ",
+chuaCoData:"Chưa có dữ liệu đo.",lan:"lần",
+xoaThuaData:"Dữ liệu thửa đã nhập sẽ bị xóa. Tiếp tục?",
+placeholderTen:"VD: Đợt đo KM - T3/2026",
+tongDiem:"Tổng số điểm đo:",
+},
+en:{
+appTitle:"In-situ Soil Analyzer Test",
+newSession:"New session",tenPhien:"Session name",ngayLap:"Date",khuLienHop:"Area",
+tiepTuc:"Continue",taiLenCSV:"Upload CSV",nhapTay:"Manual input",
+hoiImport:"Upload a plot list file?\n\nOK = Upload CSV\nCancel = Manual",
+trungTen:"Session name exists.",nhapTen:"Please enter session name.",
+thongTinChung:"General info",diemDoDac:"Measurement points",
+thongTinPhien:"Session info",thua:"Plot",themThua:"+Add plot",
+tiepDD:"Next → Measurements",quayLai:"← Back",luuPhien:"Save",
+daNN:"Done",diem:"points",nhayThua:"Jump to plot:",
+dienTich:"Area (ha)",loaiCay:"Crop",thoiDiemSX:"Crop age (months)",
+tuoiNuoc:"Irrigation",bonPhan:"Fertilizer",
+kinhDo:"Longitude",viDo:"Latitude",nguoiTH:"Operator",ngayLay:"Date",
+gioHT:"Time completed",ghiChu:"Notes",hinhAnh:"Photo",doLai:"Re-measure",
+themAnh:"+Add photo",xoaDiem:"Delete this point",xoaThua:"Delete this plot",xoa:"Delete",
+xuatCSV:"Export CSV",trangChu:"Home",sua:"Edit",
+chuaCo:"No sessions yet.",nhanPlus:"Tap + to create.",
+xoaPhien1:"Recommended: save CSV first.",xoaPhien2:"Delete session? Cannot undo.",
+nhapThuaTT:"Please enter plot info.",
+tenThua:"Plot name",maThuaQTSX:"QTSX code",
+xiNghiep:"Enterprise",nongTruong:"Farm",lo:"Block",
+backup:"Please download CSV after each session.",
+tuoiOpt1:"Currently irrigating",tuoiOpt2:"Recently irrigated (drops remain)",tuoiOpt3:"Moderately moist",tuoiOpt4:"Dry soil",tuoiOpt5:"Unknown",
+bonOpt1:"Recently fertilized",bonOpt2:"Not fertilized",bonOpt3:"Unknown",
+chuaCoData:"No measurement data.",lan:"attempt",
+xoaThuaData:"Plot data will be deleted. Continue?",
+placeholderTen:"e.g. KM batch - Mar/2026",
+tongDiem:"Total points:",
+}
+};
+function T(k){var l=LANG[S.lang]||LANG.vi;return(l&&l[k])||LANG.vi[k]||k}
+
+function thuaName(v){if(!v.nong_truong&&!v.lo&&!v.thua)return"";return(v.nong_truong||"")+"/"+(v.lo||"")+"/"+(v.thua||"")}
+function dpName(v,lan){var base="DP"+(v?thuaName(v):"");if(lan>1)base+=" - "+T("lan")+" "+lan;return base}
+
+function save(){try{localStorage.setItem(DB,JSON.stringify({theme:S.theme,lang:S.lang,phieus:S.phieus}))}catch(e){}}
+function load(){try{var d=localStorage.getItem(DB);if(d){var p=JSON.parse(d);S.phieus=p.phieus||[];S.theme=p.theme||"standard";S.lang=p.lang||"vi"}}catch(e){}}
+
+// ===== DOM HELPERS =====
+function el(tag,at,ch){var e=document.createElement(tag);if(at)Object.keys(at).forEach(function(k){if(k==="style"&&typeof at[k]==="object")Object.assign(e.style,at[k]);else if(k.indexOf("on")===0)e.addEventListener(k.substr(2).toLowerCase(),at[k]);else if(k==="className")e.className=at[k];else e.setAttribute(k,at[k])});if(ch!=null){if(Array.isArray(ch))ch.forEach(function(c){if(c!=null)e.appendChild(typeof c==="object"?c:document.createTextNode(String(c)))});else e.appendChild(typeof ch==="object"?ch:document.createTextNode(String(ch)))}return e}
+function fi(val,cb,at){var inp=el("input",Object.assign({className:"fi",value:val||""},at||{}));inp.addEventListener("input",function(){cb(inp.value);save()});return inp}
+function sel(val,opts,cb,ph){var s=el("select",{className:"fi"});s.appendChild(el("option",{value:""},ph||"--"));opts.forEach(function(o){var v=typeof o==="object"?o.value:o;var l=typeof o==="object"?o.label:o;var op=el("option",{value:v},l);if(v===val)op.selected=true;s.appendChild(op)});s.addEventListener("change",function(){cb(s.value)});return s}
+function tog(val,cb){var b=el("button",{className:"toggle"+(val?" on":"")});var knob=el("div",{className:"toggle-knob"});b.appendChild(knob);b.addEventListener("click",function(){val=!val;b.className="toggle"+(val?" on":"");knob.style.left=val?"22px":"2px";cb(val)});return b}
+function ro(l,v){return el("div",{className:"ro-field"},[el("span",{className:"ro-label"},l+": "),el("span",{className:"ro-val"},v||"—")])}
+
+function mkHeader(leftEl,title,extras){
+var hdr=el("div",{className:"header"});
+hdr.appendChild(leftEl);
+hdr.appendChild(el("span",{className:"header-title"},title));
+var right=el("div",{style:{display:"flex",gap:"6px",alignItems:"center"}});
+right.appendChild(el("button",{className:"header-btn",onClick:nextTheme},icon("palette")));
+if(extras)extras.forEach(function(x){right.appendChild(x)});
+right.appendChild(el("button",{className:"header-btn",onClick:nextLang},S.lang.toUpperCase()));
+hdr.appendChild(right);return hdr;
+}
+
+// ===== CSV IMPORT =====
+function doImport(e,isCreate){var file=e.target.files[0];if(!file)return;var reader=new FileReader();reader.onload=function(ev){try{
+var text=ev.target.result;
+// Handle BOM
+if(text.charCodeAt(0)===0xFEFF)text=text.slice(1);
+var lines=text.split("\n").map(function(l){return l.split(",").map(function(c){return c.trim().replace(/^"|"$/g,"")})});
+if(lines.length<2)return;
+var hd=lines[0];
+var rows=lines.slice(1).filter(function(r){return r.length>=hd.length&&r.some(function(c){return c})});
+var data=rows.map(function(r){var o={};hd.forEach(function(k,i){o[k]=r[i]||""});return o});
+S.cp.csvData=data;
+var klh=S.cp.khuLienHop;
+var filtered=klh?data.filter(function(d){return(d.khu_lien_hop||"").toUpperCase()===klh.toUpperCase()}):data;
+if(filtered.length===0&&data.length>0)filtered=data;
+S.cp.vuonThua=filtered.map(function(d){return{id:gid(),ma_thua_qtsx:d.ma_thua_qtsx||"",xi_nghiep:d.xi_nghiep||"",nong_truong:d.nong_truong||"",lo:d.lo||"",thua:d.thua||""}});
+// Generate 1 measurement point per plot
+genDiemDo();
+if(isCreate){S.step=1;S.screen="edit"}
+render();save()
+}catch(err){alert("Error: "+err.message)}};reader.readAsText(file);e.target.value=""}
+
+function genDiemDo(){
+if(!S.cp)return;
+var existing=S.cp.diemDo||[];
+S.cp.vuonThua.forEach(function(v){
+var has=existing.filter(function(d){return d.vuon_id===v.id});
+if(has.length===0){
+existing.push(mkDiem(v.id,1));
+}
+});
+S.cp.diemDo=existing;
+}
+
+function mkDiem(vuon_id,lan){
+return{id:gid(),vuon_id:vuon_id,lan:lan||1,dien_tich_ha:"",loai_cay:"",thoi_diem_sx:"",tuoi_nuoc:"",bon_phan:"",kinh_do:"",vi_do:"",nguoi_th:"",ngay_lay_mau:new Date().toISOString().slice(0,10),gio_hoan_thanh:"",hinh_anh:false,hinh_anh_files:[],do_lai:false,ghi_chu:""};
+}
+
+function goStep(s){if(s===2)genDiemDo();S.step=s;render();save();window.scrollTo(0,0)}
+
+function saveHome(){
+if(S.cp){S.cp.updatedAt=new Date().toISOString();var i=S.phieus.findIndex(function(x){return x.id===S.cp.id});if(i>=0)S.phieus[i]=JSON.parse(JSON.stringify(S.cp));else S.phieus.push(JSON.parse(JSON.stringify(S.cp)))}
+S.screen="home";S.cp=null;render();save();
+}
+
+// ===== EXPORT CSV =====
+function exportCSV(p){
+if(!p||!p.diemDo||p.diemDo.length===0){alert(T("chuaCoData"));return}
+var hd=["ten_diem","khu_lien_hop","xi_nghiep","nong_truong","lo","thua","ma_thua_qtsx","dien_tich_ha","loai_cay","thoi_diem_sx","tuoi_nuoc","bon_phan","kinh_do","vi_do","nguoi_thuc_hien","ngay_lay_mau","gio_hoan_thanh","hinh_anh","do_lai","lan_do","ghi_chu"];
+var rows=p.diemDo.map(function(d){
+var v=p.vuonThua.find(function(x){return x.id===d.vuon_id})||{};
+var name=dpName(v,d.lan);
+var photos=(d.hinh_anh_files||[]).join("; ");
+return[name,p.khuLienHop||"",v.xi_nghiep||"",v.nong_truong||"",v.lo||"",v.thua||"",v.ma_thua_qtsx||"",d.dien_tich_ha,d.loai_cay,d.thoi_diem_sx,d.tuoi_nuoc,d.bon_phan,d.kinh_do,d.vi_do,d.nguoi_th,d.ngay_lay_mau,d.gio_hoan_thanh,photos,d.do_lai?"Yes":"No",d.lan,d.ghi_chu];
+});
+var csv=[hd.join(",")].concat(rows.map(function(r){return r.map(function(c){return'"'+(c!=null?c:"")+'"'}).join(",")})).join("\n");
+var blob=new Blob(["\uFEFF"+csv],{type:"text/csv;charset=utf-8;"});
+var a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=(p.tenPhien||"phien_do").replace(/[^a-zA-Z0-9_\-\u00C0-\u1EF9]/g,"_")+".csv";document.body.appendChild(a);a.click();document.body.removeChild(a);
+}
+
+// ===== RENDER VUON CARD (Step 1) =====
+function rVuon(v){
+var card=el("div",{className:"card",id:"vuon-"+v.id});
+var hdr=el("div",{className:"collapse-header"});
+var titleSpan=el("span",{style:{fontWeight:"600"}},thuaName(v)||T("tenThua"));
+hdr.appendChild(titleSpan);
+function updTitle(){titleSpan.textContent=thuaName(v)||T("tenThua")}
+var col=v._collapsed||false;
+var arrow=el("span",{style:{fontSize:"18px"}},col?"▸":"▾");
+hdr.appendChild(arrow);
+var ct=el("div",{style:{marginTop:"8px",display:col?"none":"block"}});
+hdr.addEventListener("click",function(){col=!col;v._collapsed=col;ct.style.display=col?"none":"block";arrow.textContent=col?"▸":"▾"});
+
+var csv=S.cp.csvData||[];
+var klh=S.cp.khuLienHop;
+var filtered=csv.filter(function(d){return!klh||(d.khu_lien_hop||"").toUpperCase()===klh.toUpperCase()});
+var opts=filtered.map(function(d){return d.ma_thua_qtsx}).filter(Boolean).filter(function(val,idx,arr){return arr.indexOf(val)===idx});
+
+ct.appendChild(el("label",{className:"label"},T("maThuaQTSX")));
+if(opts.length>0){
+ct.appendChild(sel(v.ma_thua_qtsx,opts,function(val){
+v.ma_thua_qtsx=val;
+var m=filtered.find(function(d){return d.ma_thua_qtsx===val});
+if(m){["xi_nghiep","nong_truong","lo","thua"].forEach(function(k){v[k]=m[k]||""})}
+render();save();
+}));
+}else{ct.appendChild(fi(v.ma_thua_qtsx,function(val){v.ma_thua_qtsx=val}))}
+
+[[T("xiNghiep"),"xi_nghiep"],[T("nongTruong"),"nong_truong"]].forEach(function(x){
+ct.appendChild(el("label",{className:"label"},x[0]));
+ct.appendChild(fi(v[x[1]],function(val){v[x[1]]=val;updTitle()}));
+});
+var r1=el("div",{className:"row"});
+[[T("lo"),"lo"],[T("thua"),"thua"]].forEach(function(x){
+var d=el("div",{className:"flex1"});
+d.appendChild(el("label",{className:"label"},x[0]));
+d.appendChild(fi(v[x[1]],function(val){v[x[1]]=val;updTitle()}));
+r1.appendChild(d);
+});
+ct.appendChild(r1);
+
+ct.appendChild(el("button",{className:"danger-link",onClick:function(){
+S.cp.vuonThua=S.cp.vuonThua.filter(function(x){return x.id!==v.id});
+S.cp.diemDo=(S.cp.diemDo||[]).filter(function(x){return x.vuon_id!==v.id});
+render();save();
+}},T("xoaThua")));
+
+card.appendChild(hdr);card.appendChild(ct);return card;
+}
+
+// ===== RENDER DIEM DO CARD (Step 2) =====
+function rDiemDo(d){
+var cp=S.cp;
+var v=cp.vuonThua.find(function(x){return x.id===d.vuon_id});
+var name=dpName(v,d.lan);
+var filled=d.kinh_do&&d.vi_do&&d.nguoi_th;
+
+var isRetake=d.lan>1;
+var card=el("div",{className:"card"+(isRetake?" retake-card":""),id:"diem-"+d.id});
+var hdr=el("div",{className:"collapse-header"});
+var titleSpan=el("span",{style:{fontWeight:"600",fontSize:"13px"}},name+(filled?" ✓":""));
+hdr.appendChild(titleSpan);
+var arrow=el("span",{style:{fontSize:"18px"}},"▾");
+hdr.appendChild(arrow);
+var ct=el("div",{style:{marginTop:"8px"}});
+var col=false;
+hdr.addEventListener("click",function(){col=!col;ct.style.display=col?"none":"block";arrow.textContent=col?"▸":"▾"});
+
+// Diện tích, Loại cây, Thời điểm SX
+var r1=el("div",{className:"row"});
+var d1=el("div",{className:"flex1"});
+d1.appendChild(el("label",{className:"label"},T("dienTich")));
+d1.appendChild(fi(d.dien_tich_ha,function(val){d.dien_tich_ha=val},{inputmode:"decimal"}));
+r1.appendChild(d1);
+var d2=el("div",{className:"flex1"});
+d2.appendChild(el("label",{className:"label"},T("loaiCay")));
+d2.appendChild(fi(d.loai_cay,function(val){d.loai_cay=val}));
+r1.appendChild(d2);
+ct.appendChild(r1);
+
+ct.appendChild(el("label",{className:"label"},T("thoiDiemSX")));
+ct.appendChild(fi(d.thoi_diem_sx,function(val){d.thoi_diem_sx=val},{inputmode:"numeric"}));
+
+// Tưới nước dropdown
+ct.appendChild(el("label",{className:"label"},T("tuoiNuoc")));
+var tuoiOpts=[
+{value:"Đang tưới nước",label:T("tuoiOpt1")},
+{value:"Mới tưới nước (còn giọt đọng)",label:T("tuoiOpt2")},
+{value:"Đất ẩm vừa",label:T("tuoiOpt3")},
+{value:"Đất khô",label:T("tuoiOpt4")},
+{value:"Không rõ",label:T("tuoiOpt5")}
+];
+ct.appendChild(sel(d.tuoi_nuoc,tuoiOpts,function(val){d.tuoi_nuoc=val;save()},"-- "+T("tuoiNuoc")+" --"));
+
+// Bón phân dropdown
+ct.appendChild(el("label",{className:"label"},T("bonPhan")));
+var bonOpts=[
+{value:"Mới bón phân",label:T("bonOpt1")},
+{value:"Không bón phân",label:T("bonOpt2")},
+{value:"Không rõ",label:T("bonOpt3")}
+];
+ct.appendChild(sel(d.bon_phan,bonOpts,function(val){d.bon_phan=val;save()},"-- "+T("bonPhan")+" --"));
+
+// GPS row
+var rg=el("div",{style:{display:"flex",gap:"8px",alignItems:"flex-end",marginTop:"4px"}});
+var dk=el("div",{className:"flex1"});
+dk.appendChild(el("label",{className:"label"},T("kinhDo")));
+dk.appendChild(fi(d.kinh_do,function(val){d.kinh_do=val}));
+rg.appendChild(dk);
+var dv=el("div",{className:"flex1"});
+dv.appendChild(el("label",{className:"label"},T("viDo")));
+dv.appendChild(fi(d.vi_do,function(val){d.vi_do=val}));
+rg.appendChild(dv);
+var gpsBtn=el("button",{className:"btn btn-p",style:{width:"auto",padding:"10px",marginTop:"0"},onClick:function(){
+if(!navigator.geolocation){alert("GPS N/A");return}
+navigator.geolocation.getCurrentPosition(function(pos){
+d.kinh_do=pos.coords.longitude.toFixed(6);
+d.vi_do=pos.coords.latitude.toFixed(6);
+render();save();
+},function(err){alert("GPS: "+err.message)},{enableHighAccuracy:true,timeout:10000});
+}});
+gpsBtn.appendChild(icon("pin"));
+rg.appendChild(gpsBtn);
+ct.appendChild(rg);
+
+// Người thực hiện
+ct.appendChild(el("label",{className:"label"},T("nguoiTH")));
+ct.appendChild(fi(d.nguoi_th,function(val){d.nguoi_th=val}));
+
+// Ngày + Giờ
+var r4=el("div",{className:"row"});
+var dn=el("div",{className:"flex1"});
+dn.appendChild(el("label",{className:"label"},T("ngayLay")));
+dn.appendChild(fi(d.ngay_lay_mau,function(val){d.ngay_lay_mau=val},{type:"date"}));
+r4.appendChild(dn);
+var dg=el("div",{className:"flex1"});
+dg.appendChild(el("label",{className:"label"},T("gioHT")));
+dg.appendChild(fi(d.gio_hoan_thanh,function(val){d.gio_hoan_thanh=val},{type:"time"}));
+r4.appendChild(dg);
+ct.appendChild(r4);
+
+// Hình ảnh toggle
+var photoRow=el("div",{style:{display:"flex",gap:"16px",marginTop:"12px",alignItems:"center"}});
+var pt=el("div",{style:{display:"flex",alignItems:"center",gap:"6px"}});
+pt.appendChild(tog(d.hinh_anh,function(val){d.hinh_anh=val;save();render()}));
+pt.appendChild(el("span",{style:{fontSize:"13px"}},T("hinhAnh")));
+photoRow.appendChild(pt);
+ct.appendChild(photoRow);
+
+if(d.hinh_anh){
+var photoArea=el("div",{className:"photo-grid"});
+if(!d.hinh_anh_files)d.hinh_anh_files=[];
+d.hinh_anh_files.forEach(function(fname,fi2){
+var item=el("div",{className:"photo-item"});
+item.appendChild(el("div",{style:{width:"60px",height:"60px",borderRadius:"6px",background:"var(--inputBg)",border:"1px solid var(--divider)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:"10px",textAlign:"center",padding:"2px",color:"var(--muted)",wordBreak:"break-all"}},fname));
+item.appendChild(el("button",{className:"photo-rm",onClick:function(){
+d.hinh_anh_files.splice(fi2,1);
+render();save();
+}},"×"));
+photoArea.appendChild(item);
+});
+// Add photo button
+var addBtn=el("button",{className:"add-photo-btn",onClick:function(){
+var inp=document.createElement("input");
+inp.type="file";inp.accept="image/*";inp.setAttribute("capture","environment");
+inp.addEventListener("change",function(){
+if(inp.files&&inp.files[0]){
+var f=inp.files[0];
+var ts=new Date();
+var fname=dpName(v,d.lan).replace(/[^a-zA-Z0-9]/g,"_")+"_"+ts.getFullYear()+pad(ts.getMonth()+1)+pad(ts.getDate())+"_"+pad(ts.getHours())+pad(ts.getMinutes())+pad(ts.getSeconds())+".jpg";
+if(!d.hinh_anh_files)d.hinh_anh_files=[];
+d.hinh_anh_files.push(fname);
+render();save();
+}
+});
+inp.click();
+}});
+addBtn.appendChild(icon("cam"));
+photoArea.appendChild(addBtn);
+ct.appendChild(photoArea);
+}
+
+// Đo lại toggle
+var doLaiRow=el("div",{style:{display:"flex",gap:"16px",marginTop:"12px",alignItems:"center"}});
+var dl=el("div",{style:{display:"flex",alignItems:"center",gap:"6px"}});
+dl.appendChild(tog(d.do_lai,function(val){
+d.do_lai=val;
+if(val){
+// Find max lan for this vuon
+var samePlot=cp.diemDo.filter(function(x){return x.vuon_id===d.vuon_id});
+var maxLan=0;
+samePlot.forEach(function(x){if(x.lan>maxLan)maxLan=x.lan});
+var newLan=maxLan+1;
+// Check if already created
+var alreadyHas=samePlot.find(function(x){return x.lan===newLan});
+if(!alreadyHas){
+var newDiem=mkDiem(d.vuon_id,newLan);
+// Copy some fields
+newDiem.dien_tich_ha=d.dien_tich_ha;
+newDiem.loai_cay=d.loai_cay;
+newDiem.thoi_diem_sx=d.thoi_diem_sx;
+// Insert right after current diem
+var idx=cp.diemDo.indexOf(d);
+cp.diemDo.splice(idx+1,0,newDiem);
+}
+}
+save();render();
+}));
+dl.appendChild(el("span",{style:{fontSize:"13px"}},T("doLai")));
+doLaiRow.appendChild(dl);
+ct.appendChild(doLaiRow);
+
+// Ghi chú
+ct.appendChild(el("label",{className:"label"},T("ghiChu")));
+ct.appendChild(fi(d.ghi_chu,function(val){d.ghi_chu=val}));
+
+// Xóa (only for retakes or manual adds)
+if(d.lan>1){
+ct.appendChild(el("button",{className:"danger-link",onClick:function(){
+// Also untoggle parent do_lai
+var parent=cp.diemDo.find(function(x){return x.vuon_id===d.vuon_id&&x.lan===d.lan-1});
+if(parent)parent.do_lai=false;
+cp.diemDo=cp.diemDo.filter(function(x){return x.id!==d.id});
+render();save();
+}},T("xoaDiem")));
+}
+
+card.appendChild(hdr);card.appendChild(ct);return card;
+}
+
+// ===== HOME =====
+function rHome(){var root=el("div");
+root.appendChild(mkHeader(el("span"),T("appTitle"),[el("button",{className:"header-btn",onClick:function(){S.ro=!S.ro;render()}},S.ro?icon("eye"):icon("edit"))]));
+var bd=el("div",{className:"body-content"});
+if(S.phieus.length===0)bd.appendChild(el("div",{className:"empty-state"},[icon("clip"),el("div",{style:{marginTop:"10px"}},T("chuaCo")),el("div",{style:{fontSize:"13px"}},T("nhanPlus"))]));
+
+S.phieus.forEach(function(p){
+var w=el("div",{style:{marginBottom:"10px"}});
+var card=el("div",{className:"card",style:{cursor:"pointer",marginBottom:"0"}});
+card.appendChild(el("div",{className:"card-title"},p.tenPhien||"..."));
+var tongDiem=(p.diemDo||[]).length;
+var done=(p.diemDo||[]).filter(function(d){return d.kinh_do&&d.vi_do&&d.nguoi_th}).length;
+var pct=tongDiem>0?Math.round(done/tongDiem*100):0;
+var pctColor=pct===100?"var(--accent)":pct>0?"#e8a700":"var(--muted)";
+var subRow=el("div",{style:{display:"flex",justifyContent:"space-between",marginTop:"2px"}});
+subRow.appendChild(el("span",{style:{fontSize:"12px",fontStyle:"italic",color:"var(--muted)"}},p.khuLienHop||""));
+subRow.appendChild(el("span",{style:{fontSize:"12px",fontStyle:"italic",color:"var(--muted)"}},p.updatedAt?new Date(p.updatedAt).toLocaleDateString("vi-VN"):""));
+card.appendChild(subRow);
+card.appendChild(el("div",{style:{display:"flex",justifyContent:"flex-end",marginTop:"2px"}},[el("span",{style:{fontSize:"12px",fontWeight:"600",color:pctColor}},pct+"% ("+done+"/"+tongDiem+")")]));
+card.appendChild(el("div",{style:{height:"4px",background:"var(--divider)",borderRadius:"2px",marginTop:"4px",overflow:"hidden"}},[el("div",{style:{height:"100%",width:pct+"%",background:pctColor,borderRadius:"2px",transition:"width 0.3s"}})]));
+card.addEventListener("click",function(){S.cp=JSON.parse(JSON.stringify(p));if(S.ro)S.screen="view";else{S.screen="edit";S.step=1}render()});
+w.appendChild(card);
+
+var acts=el("div",{style:{display:"flex",gap:"6px",marginTop:"6px"}});
+acts.appendChild(el("button",{className:"btn btn-o btn-sm",onClick:function(){exportCSV(p)}},T("xuatCSV")));
+acts.appendChild(el("button",{className:"btn btn-d btn-sm",onClick:function(){if(!confirm(T("xoaPhien1")))return;if(!confirm(T("xoaPhien2")))return;S.phieus=S.phieus.filter(function(x){return x.id!==p.id});render();save()}},T("xoa")));
+w.appendChild(acts);bd.appendChild(w);
+});
+
+root.appendChild(bd);
+bd.appendChild(el("div",{style:{textAlign:"center",color:"var(--muted)",fontSize:"12px",padding:"20px 16px",fontStyle:"italic"}},T("backup")));
+if(!S.ro){var fab=el("button",{className:"fab",onClick:function(){
+S.cp={id:gid(),tenPhien:"",ngayLap:new Date().toISOString().slice(0,10),khuLienHop:"",vuonThua:[],csvData:[],diemDo:[],createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()};
+S.step=0;S.screen="create";render();
+}});fab.appendChild(icon("plus"));root.appendChild(fab)}
+return root;
+}
+
+// ===== CREATE =====
+function rCreate(){var root=el("div");
+var homeBtn=el("button",{className:"header-btn",onClick:function(){S.screen="home";S.cp=null;render()}});homeBtn.appendChild(icon("home"));
+root.appendChild(mkHeader(homeBtn,T("newSession"),[]));
+var bd=el("div",{className:"body-content"});
+
+bd.appendChild(el("label",{className:"label"},T("tenPhien")));
+bd.appendChild(fi(S.cp?S.cp.tenPhien:"",function(v){S.cp.tenPhien=v},{placeholder:T("placeholderTen")}));
+
+bd.appendChild(el("label",{className:"label"},T("khuLienHop")));
+bd.appendChild(fi(S.cp?S.cp.khuLienHop:"",function(v){S.cp.khuLienHop=v}));
+
+bd.appendChild(el("button",{className:"btn btn-p",style:{marginTop:"20px"},onClick:function(){
+if(!S.cp||!S.cp.tenPhien){alert(T("nhapTen"));return}
+var isDup=S.phieus.some(function(p){return p.tenPhien===S.cp.tenPhien});
+if(isDup){alert(T("trungTen"));return}
+if(confirm(T("hoiImport"))){document.getElementById("csv-c").click()}else{S.step=1;S.screen="edit";render()}
+}},T("tiepTuc")));
+
+bd.appendChild(el("input",{type:"file",id:"csv-c",accept:".csv",style:{display:"none"},onChange:function(e){doImport(e,true)}}));
+root.appendChild(bd);return root;
+}
+
+// ===== EDIT =====
+function rEdit(){if(!S.cp)return el("div");var cp=S.cp;var root=el("div");
+var homeBtn=el("button",{className:"header-btn",onClick:saveHome});homeBtn.appendChild(icon("home"));
+root.appendChild(mkHeader(homeBtn,cp.tenPhien||T("newSession"),[el("button",{className:"header-btn",onClick:function(){S.ro=true;S._lastStep=S.step;S.screen="view";render()}},icon("eye"))]));
+
+var prog=el("div",{className:"progress"});
+[["① "+T("thongTinChung"),1],["② "+T("diemDoDac"),2]].forEach(function(x){
+var cls="p-step";if(S.step===x[1])cls+=" active";else if(S.step>x[1])cls+=" done";
+prog.appendChild(el("button",{className:cls,onClick:function(){
+if(x[1]>=2){var ok=cp.vuonThua.length>0&&cp.vuonThua.some(function(v){return v.nong_truong||v.lo||v.thua});if(!ok){alert(T("nhapThuaTT"));return}}
+goStep(x[1]);
+}},x[0]));
+});
+root.appendChild(prog);
+var bd=el("div",{className:"body-content"});
+
+if(S.step===1){
+var c=el("div",{className:"card"});
+c.appendChild(el("div",{style:{fontWeight:"700",marginBottom:"8px"}},T("thongTinPhien")));
+c.appendChild(el("label",{className:"label"},T("tenPhien")));
+c.appendChild(fi(cp.tenPhien,function(v){cp.tenPhien=v}));
+c.appendChild(el("label",{className:"label"},T("ngayLap")));
+c.appendChild(fi(cp.ngayLap,function(v){cp.ngayLap=v},{type:"date"}));
+c.appendChild(el("label",{className:"label"},T("khuLienHop")));
+c.appendChild(fi(cp.khuLienHop,function(v){cp.khuLienHop=v}));
+bd.appendChild(c);
+
+var vh=el("div",{style:{fontWeight:"700",marginTop:"16px",marginBottom:"8px",display:"flex",justifyContent:"space-between",alignItems:"center"}});
+vh.appendChild(el("span",{},T("thua")+" ("+cp.vuonThua.length+")"));
+vh.appendChild(el("button",{className:"btn btn-o btn-sm",onClick:function(){
+if(cp.vuonThua.length>0&&!confirm(T("xoaThuaData")))return;
+document.getElementById("csv-e").click();
+}},T("taiLenCSV")));
+bd.appendChild(vh);
+bd.appendChild(el("input",{type:"file",id:"csv-e",accept:".csv",style:{display:"none"},onChange:function(e){doImport(e,false)}}));
+
+cp.vuonThua.forEach(function(v){bd.appendChild(rVuon(v))});
+bd.appendChild(el("button",{className:"btn btn-o",style:{marginTop:"4px"},onClick:function(){
+cp.vuonThua.push({id:gid(),ma_thua_qtsx:"",xi_nghiep:"",nong_truong:"",lo:"",thua:""});
+render();save();
+}},T("themThua")));
+
+bd.appendChild(el("button",{className:"btn btn-p",style:{marginTop:"16px"},onClick:function(){
+var ok=cp.vuonThua.length>0&&cp.vuonThua.some(function(v){return v.nong_truong||v.lo||v.thua});
+if(!ok){alert(T("nhapThuaTT"));return}
+goStep(2);
+}},T("tiepDD")));
+}
+
+if(S.step===2){
+var filled=cp.diemDo.filter(function(d){return d.kinh_do&&d.vi_do&&d.nguoi_th}).length;
+bd.appendChild(el("div",{style:{fontSize:"13px",color:"var(--muted)",marginBottom:"10px"}},T("daNN")+" "+filled+" / "+cp.diemDo.length+" "+T("diem")));
+
+// Anchor FAB
+var fabList=el("button",{className:"fab",style:{fontSize:"18px"},onClick:function(){
+var panel=document.getElementById("anchor-panel");if(panel)panel.classList.toggle("hidden");
+}});fabList.appendChild(icon("list"));bd.appendChild(fabList);
+
+var ap=el("div",{id:"anchor-panel",className:"card hidden",style:{position:"fixed",bottom:"84px",right:"20px",width:"280px",maxHeight:"250px",overflowY:"auto",zIndex:"51",boxShadow:"0 4px 16px rgba(0,0,0,0.25)"}});
+ap.appendChild(el("div",{style:{fontWeight:"700",fontSize:"13px",marginBottom:"6px"}},T("nhayThua")));
+cp.vuonThua.forEach(function(v){
+var hasDPs=cp.diemDo.filter(function(d){return d.vuon_id===v.id});
+if(hasDPs.length===0)return;
+var doneDPs=hasDPs.filter(function(d){return d.kinh_do&&d.vi_do&&d.nguoi_th}).length;
+var label=thuaName(v)+" ("+doneDPs+"/"+hasDPs.length+")";
+var done2=doneDPs===hasDPs.length;
+ap.appendChild(el("div",{style:{padding:"8px 10px",cursor:"pointer",borderBottom:"1px solid var(--divider)",fontSize:"14px",color:done2?"var(--accent)":"var(--cardText)"},onClick:function(){
+var t=document.getElementById("diem-"+hasDPs[0].id);
+if(t){t.scrollIntoView({behavior:"smooth",block:"start"});document.getElementById("anchor-panel").classList.add("hidden")}
+}},label+(done2?" ✓":"")));
+});
+bd.appendChild(ap);
+
+cp.diemDo.forEach(function(d){bd.appendChild(rDiemDo(d))});
+
+var tc=el("div",{className:"card",style:{marginTop:"12px"}});
+tc.appendChild(el("div",{style:{display:"flex",justifyContent:"space-between",fontSize:"14px"}},[el("span",{},T("tongDiem")),el("strong",{},String(cp.diemDo.length))]));
+bd.appendChild(tc);
+
+var nav=el("div",{style:{display:"flex",gap:"8px",marginTop:"12px"}});
+nav.appendChild(el("button",{className:"btn btn-o",style:{flex:"1"},onClick:function(){goStep(1)}},T("quayLai")));
+nav.appendChild(el("button",{className:"btn btn-p",style:{flex:"1"},onClick:saveHome},T("luuPhien")));
+bd.appendChild(nav);
+}
+
+root.appendChild(bd);return root;
+}
+
+// ===== VIEW =====
+function rView(){if(!S.cp)return el("div");var cp=S.cp;var root=el("div");
+var homeBtn=el("button",{className:"header-btn",onClick:function(){S.screen="home";S.cp=null;render()}});homeBtn.appendChild(icon("home"));
+var editBtn=el("button",{className:"header-btn",onClick:function(){S.ro=false;S.step=S._lastStep||1;S.screen="edit";render()}});editBtn.appendChild(icon("edit"));editBtn.appendChild(document.createTextNode(" "+T("sua")));
+root.appendChild(mkHeader(homeBtn,cp.tenPhien||"...",[editBtn]));
+var bd=el("div",{className:"body-content"});
+
+var c1=el("div",{className:"card"});
+c1.appendChild(el("div",{style:{fontWeight:"700",marginBottom:"8px"}},T("thongTinPhien")));
+[[T("tenPhien"),cp.tenPhien],[T("ngayLap"),cp.ngayLap],[T("khuLienHop"),cp.khuLienHop]].forEach(function(x){c1.appendChild(ro(x[0],x[1]))});
+bd.appendChild(c1);
+
+bd.appendChild(el("div",{style:{fontWeight:"700",marginTop:"12px",marginBottom:"6px"}},T("thua")+" ("+cp.vuonThua.length+")"));
+cp.vuonThua.forEach(function(v){var c=el("div",{className:"card"});c.appendChild(ro(T("thua"),thuaName(v)));c.appendChild(ro(T("maThuaQTSX"),v.ma_thua_qtsx));bd.appendChild(c)});
+
+bd.appendChild(el("div",{style:{fontWeight:"700",marginTop:"12px",marginBottom:"6px"}},T("diemDoDac")+" ("+cp.diemDo.length+")"));
+cp.diemDo.forEach(function(d){
+var v=cp.vuonThua.find(function(x){return x.id===d.vuon_id});
+var name=dpName(v,d.lan);
+var c=el("div",{className:"card"+(d.lan>1?" retake-card":"")});
+c.appendChild(ro(T("diemDoDac"),name));
+c.appendChild(ro("GPS",d.kinh_do+", "+d.vi_do));
+c.appendChild(ro(T("tuoiNuoc"),d.tuoi_nuoc));
+c.appendChild(ro(T("bonPhan"),d.bon_phan));
+c.appendChild(ro(T("nguoiTH"),d.nguoi_th));
+if(d.hinh_anh_files&&d.hinh_anh_files.length>0)c.appendChild(ro(T("hinhAnh"),d.hinh_anh_files.join(", ")));
+if(d.ghi_chu)c.appendChild(ro(T("ghiChu"),d.ghi_chu));
+bd.appendChild(c);
+});
+
+var nav=el("div",{style:{display:"flex",gap:"8px",marginTop:"16px"}});
+nav.appendChild(el("button",{className:"btn btn-p",style:{flex:"1"},onClick:function(){exportCSV(cp)}},T("xuatCSV")));
+bd.appendChild(nav);
+root.appendChild(bd);return root;
+}
+
+function render(){
+document.body.setAttribute("data-theme",S.theme);
+var app=document.getElementById("app");
+app.innerHTML="";
+if(S.screen==="home")app.appendChild(rHome());
+else if(S.screen==="create")app.appendChild(rCreate());
+else if(S.screen==="edit")app.appendChild(rEdit());
+else if(S.screen==="view")app.appendChild(rView());
+}
+
+load();render();
+
+if('serviceWorker' in navigator){navigator.serviceWorker.register('./serviceWorker.js').catch(function(){})}
+</script>
+</body>
+</html>
