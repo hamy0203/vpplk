@@ -94,19 +94,36 @@ export function rEdit(renderFn) {
     bd.appendChild(fabList);
 
     var ap = el("div", { id: "anchor-panel", className: "card hidden", style: { position: "fixed", bottom: "84px", right: "20px", width: "280px", maxHeight: "250px", overflowY: "auto", zIndex: "51", boxShadow: "0 4px 16px rgba(0,0,0,0.25)" } });
-    var _apDone = cp.diemDo.filter(function(d) { return d.kinh_do && d.vi_do && d.tuoi_nuoc && d.bon_phan; }).length;
-    var _apTotal = cp.diemDo.length;
-    ap.appendChild(el("div", { style: { fontWeight: "700", fontSize: "13px", marginBottom: "6px" } }, T("chuyenThua") + " (" + String(_apDone).padStart(2, "0") + "/" + String(_apTotal).padStart(2, "0") + ")"));
+    var apHeader = el("div", { style: { fontWeight: "700", fontSize: "13px", marginBottom: "6px" } });
+    var apRows = {};  // keyed by d.id → DOM row
+    function updAnchorPanel() {
+      var done = cp.diemDo.filter(function(d) { return d.kinh_do && d.vi_do && d.tuoi_nuoc && d.bon_phan; }).length;
+      apHeader.textContent = T("chuyenThua") + " (" + String(done).padStart(2, "0") + "/" + String(cp.diemDo.length).padStart(2, "0") + ")";
+      if (tcCount) tcCount.textContent = String(cp.diemDo.length);
+      cp.diemDo.forEach(function(d) {
+        var row = apRows[d.id];
+        if (!row) return;
+        var isDone = d.kinh_do && d.vi_do && d.tuoi_nuoc && d.bon_phan;
+        var v2 = cp.vuonThua.find(function(x) { return x.id === d.vuon_id; });
+        var lbl = d._manualZone ? ("Zone " + d._manualZone) : (v2 ? ((v2.nong_truong||"") + "/" + (v2.lo||"") + "/" + (v2.thua||"")) : "");
+        row.textContent = lbl + (isDone ? " ✓" : "");
+        row.style.color = isDone ? "var(--accent)" : "var(--cardText)";
+      });
+    }
+    ap.appendChild(apHeader);
     cp.diemDo.forEach(function(d) {
       var v = cp.vuonThua.find(function(x) { return x.id === d.vuon_id; });
       var label2 = d._manualZone ? ("Zone " + d._manualZone) : (v ? ((v.nong_truong || "") + "/" + (v.lo || "") + "/" + (v.thua || "")) : "");
       if (!label2) return;
       var isDone = d.kinh_do && d.vi_do && d.tuoi_nuoc && d.bon_phan;
-      ap.appendChild(el("div", { style: { padding: "8px 10px", cursor: "pointer", borderBottom: "1px solid var(--divider)", fontSize: "14px", color: isDone ? "var(--accent)" : "var(--cardText)" }, onClick: function() {
+      var row = el("div", { style: { padding: "8px 10px", cursor: "pointer", borderBottom: "1px solid var(--divider)", fontSize: "14px", color: isDone ? "var(--accent)" : "var(--cardText)" }, onClick: function() {
         var t = document.getElementById("diem-" + d.id);
         if (t) { t.scrollIntoView({ behavior: "smooth", block: "start" }); document.getElementById("anchor-panel").classList.add("hidden"); }
-      }}, label2 + (isDone ? " ✓" : "")));
+      }}, label2 + (isDone ? " ✓" : ""));
+      apRows[d.id] = row;
+      ap.appendChild(row);
     });
+    updAnchorPanel();
     bd.appendChild(ap);
 
     // derive zone list from vuonThua, preserving insertion order
@@ -131,18 +148,16 @@ export function rEdit(renderFn) {
 
         if (unassigned.length > 0) {
           var dropOpts = unassigned.map(function(v) { return { value: v.id, label: (v.nong_truong||"") + "/" + (v.lo||"") + "/" + (v.thua||"") }; });
-          var dropRow = el("div", { style: { display: "flex", gap: "8px", alignItems: "center", marginBottom: "8px" } });
-          var dropdown = sel("", dropOpts, function() {}, T("chonThua"));
-          dropRow.appendChild(dropdown);
-          dropRow.appendChild(el("button", { className: "btn btn-o btn-sm", style: { width: "auto" }, onClick: function() {
-            var vid = dropdown.value;
+          var dropRow = el("div", { style: { marginBottom: "8px" } });
+          var dropdown = sel("", dropOpts, function(vid) {
             if (!vid) return;
             var already = cp.diemDo.find(function(d) { return d.vuon_id === vid && d.lan === 1; });
             if (already) return;
             var newD = mkDiemExport(vid, 1);
             cp.diemDo.push(newD);
             save(); renderFn();
-          }}, T("tiepTuc")));
+          }, T("chonThua"));
+          dropRow.appendChild(dropdown);
           sec.appendChild(dropRow);
         }
       }
@@ -154,7 +169,7 @@ export function rEdit(renderFn) {
             var v = cp.vuonThua.find(function(x) { return x.id === d.vuon_id; });
             return v && v.zone === zoneName;
           });
-      zoneDiems.forEach(function(d) { sec.appendChild(rDiemDoDac(d, renderFn)); });
+      zoneDiems.forEach(function(d) { sec.appendChild(rDiemDoDac(d, renderFn, updAnchorPanel)); });
 
       return sec;
     }
@@ -180,9 +195,10 @@ export function rEdit(renderFn) {
     bd.appendChild(addZoneRow);
 
     var tc = el("div", { className: "card", style: { marginTop: "4px" } });
+    var tcCount = el("strong", {}, String(cp.diemDo.length));
     tc.appendChild(el("div", { style: { display: "flex", justifyContent: "space-between", fontSize: "14px" } }, [
       el("span", {}, T("tongSoDiemDo")),
-      el("strong", {}, String(cp.diemDo.length))
+      tcCount
     ]));
     bd.appendChild(tc);
 
