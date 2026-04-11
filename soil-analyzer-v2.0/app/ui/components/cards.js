@@ -9,7 +9,7 @@ function csvField(v, key, labelText, extraAt, updTitleFn) {
   wrap.appendChild(el("label", { className: "label" }, labelText));
   if (v._fromCSV) {
     var row = el("div", { style: { display: "flex", alignItems: "center", gap: "8px" } });
-    var valSpan = el("span", { style: { fontSize: "15px", flex: "1" } }, v[key] || "—");
+    var valSpan = el("span", { style: { fontSize: "15px", flex: "1", padding: "10px 12px", border: "1px solid var(--inputBorder)", borderRadius: "8px", background: "var(--inputBg)", color: "var(--inputText)", display: "block" } }, v[key] || "—");
     var editBtn = el("button", { className: "btn-sm btn-o btn", style: { marginTop: "0" }, onClick: function() {
       if (!confirm(T("xacNhanSuaCSV"))) return;
       var inp = fi(v[key], function(val) { v[key] = val; if (updTitleFn) updTitleFn(); }, extraAt);
