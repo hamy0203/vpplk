@@ -28,8 +28,9 @@ export function rHome(renderFn) {
     var pd = p.ngayLap ? p.ngayLap.split("-") : ["","",""];
     var cardTitle = pd[2] + "-" + pd[1] + "-" + pd[0].slice(2) + "-" + (p.khuLienHop || "...");
     card.appendChild(el("div", { className: "card-title" }, cardTitle));
-    var tongSoDiemDo = (p.diemDo || []).length;
-    var done = (p.diemDo || []).filter(isFilled).length;
+    var primary = (p.diemDo || []).filter(function(d) { return d.lan === 1; });
+    var tongSoDiemDo = primary.length;
+    var done = primary.filter(isFilled).length;
     var pct = tongSoDiemDo > 0 ? Math.round(done / tongSoDiemDo * 100) : 0;
     var pctColor = pct === 100 ? "var(--accent)" : pct > 0 ? "#e8a700" : "var(--muted)";
     var subRow = el("div", { style: { display: "flex", justifyContent: "space-between", marginTop: "2px" } });

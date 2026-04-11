@@ -85,7 +85,7 @@ export function rDiemDoDac(d, renderFn, onFillChange) {
       isPinned = !isPinned;
       card.style.boxShadow = isPinned ? "0 0 0 3px var(--accent)" : "";
       save();
-    }, 5000);
+    }, 3000);
   }, { passive: true });
   hdr.addEventListener("touchend", function() { clearTimeout(_pt); });
   hdr.addEventListener("touchcancel", function() { clearTimeout(_pt); });

@@ -97,8 +97,9 @@ export function rEdit(renderFn) {
     var apHeader = el("div", { style: { fontWeight: "700", fontSize: "13px", marginBottom: "6px" } });
     var apRows = {};  // keyed by d.id → DOM row
     function updAnchorPanel() {
-      var done = cp.diemDo.filter(function(d) { return isFilled(d); }).length;
-      apHeader.textContent = T("chuyenThua") + " (" + String(done).padStart(2, "0") + "/" + String(cp.diemDo.length).padStart(2, "0") + ")";
+      var primary = cp.diemDo.filter(function(d) { return d.lan === 1; });
+      var done = primary.filter(isFilled).length;
+      apHeader.textContent = T("chuyenThua") + " (" + String(done).padStart(2, "0") + "/" + String(primary.length).padStart(2, "0") + ")";
       if (tcCount) tcCount.textContent = String(cp.diemDo.length);
       cp.diemDo.forEach(function(d) {
         var row = apRows[d.id];
@@ -112,6 +113,7 @@ export function rEdit(renderFn) {
     }
     ap.appendChild(apHeader);
     cp.diemDo.forEach(function(d) {
+      if (d.lan !== 1) return;
       var v = cp.vuonThua.find(function(x) { return x.id === d.vuon_id; });
       var label2 = d._manualZone ? ("Zone " + d._manualZone) : (v ? ((v.nong_truong || "") + "/" + (v.lo || "") + "/" + (v.thua || "")) : "");
       if (!label2) return;
