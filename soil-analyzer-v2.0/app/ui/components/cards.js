@@ -129,11 +129,11 @@ export function rDiemDoDac(d, renderFn, onFillChange) {
   var rg = el("div", { style: { display: "flex", gap: "8px", alignItems: "flex-end", marginTop: "4px" } });
   var dk = el("div", { className: "flex1" });
   dk.appendChild(el("label", { className: "label" }, T("kinhDo")));
-  dk.appendChild(fi(d.kinh_do, function(val) { d.kinh_do = val; }));
+  dk.appendChild(fi(d.kinh_do, function(val) { d.kinh_do = val; updFilled(); }));
   rg.appendChild(dk);
   var dv = el("div", { className: "flex1" });
   dv.appendChild(el("label", { className: "label" }, T("viDo")));
-  dv.appendChild(fi(d.vi_do, function(val) { d.vi_do = val; }));
+  dv.appendChild(fi(d.vi_do, function(val) { d.vi_do = val; updFilled(); }));
   rg.appendChild(dv);
   var gpsBtn = el("button", { className: "btn btn-p", style: { width: "auto", padding: "10px", marginTop: "0" }, onClick: function() {
     if (!navigator.geolocation) { alert("GPS N/A"); return; }
