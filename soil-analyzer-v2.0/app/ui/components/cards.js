@@ -141,12 +141,9 @@ export function rDiemDoDac(d, renderFn, onFillChange) {
       var prevKD = d.kinh_do, prevVD = d.vi_do;
       d.kinh_do = pos.coords.longitude.toFixed(6);
       d.vi_do = pos.coords.latitude.toFixed(6);
-      renderFn(); save();
-      var undoBtn = document.getElementById("gps-undo-" + d.id);
-      if (undoBtn) {
-        undoBtn.style.display = "inline-block";
-        undoBtn.onclick = function() { d.kinh_do = prevKD; d.vi_do = prevVD; renderFn(); save(); };
-      }
+      updFilled(); save();
+      undoGps.style.display = "inline-block";
+      undoGps.onclick = function() { d.kinh_do = prevKD; d.vi_do = prevVD; updFilled(); save(); undoGps.style.display = "none"; };
     }, function(err) { alert("GPS: " + err.message); }, { enableHighAccuracy: true, timeout: 10000 });
   }});
   gpsBtn.appendChild(icon("pin"));
