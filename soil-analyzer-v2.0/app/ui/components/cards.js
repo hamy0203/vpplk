@@ -67,7 +67,7 @@ export function rVuon(v, renderFn) {
   card.appendChild(hdr); card.appendChild(ct); return card;
 }
 
-export function rDiemDoDac(d, renderFn) {
+export function rDiemDoDac(d, renderFn, onFillChange) {
   var cp = S.cp;
   var v = cp.vuonThua.find(function(x) { return x.id === d.vuon_id; });
   var name = d._manualZone ? ("Zone " + d._manualZone) : dpName(v, d.lan, d.do_lai);
@@ -104,6 +104,7 @@ export function rDiemDoDac(d, renderFn) {
     card.style.opacity = nowFilled ? "0.45" : "1";
     var base = d._manualZone ? ("Zone " + d._manualZone) : dpName(v, d.lan, d.do_lai);
     titleSpan.textContent = base + (nowFilled ? " ✓" : "");
+    if (onFillChange) onFillChange();
   }
 
   ct.appendChild(el("label", { className: "label" }, T("thoiDiemSX")));
@@ -211,16 +212,24 @@ export function rDiemDoDac(d, renderFn) {
   dl.appendChild(tog(d.do_lai, function(val) {
     d.do_lai = val;
     if (val) {
-      var samePlot = cp.diemDo.filter(function(x) { return x.vuon_id === d.vuon_id; });
-      var maxLan = 0;
-      samePlot.forEach(function(x) { if (x.lan > maxLan) maxLan = x.lan; });
-      var newLan = maxLan + 1;
-      var alreadyHas = samePlot.find(function(x) { return x.lan === newLan; });
+      var nextLan = d.lan + 1;
+      var alreadyHas = cp.diemDo.find(function(x) { return x.vuon_id === d.vuon_id && x.lan === nextLan; });
       if (!alreadyHas) {
-        var newDiem = mkDiemExport(d.vuon_id, newLan);
+        var newDiem = mkDiemExport(d.vuon_id, nextLan);
         newDiem.thoi_diem_sx = d.thoi_diem_sx;
         var idx = cp.diemDo.indexOf(d);
         cp.diemDo.splice(idx + 1, 0, newDiem);
+      }
+    } else {
+      var childLan = d.lan + 1;
+      var child = cp.diemDo.find(function(x) { return x.vuon_id === d.vuon_id && x.lan === childLan; });
+      if (child) {
+        // also turn off child's do_lai chain recursively
+        (function removeChain(entry) {
+          var next = cp.diemDo.find(function(x) { return x.vuon_id === entry.vuon_id && x.lan === entry.lan + 1; });
+          cp.diemDo = cp.diemDo.filter(function(x) { return x.id !== entry.id; });
+          if (next) removeChain(next);
+        })(child);
       }
     }
     save(); renderFn();
