@@ -1,6 +1,6 @@
 import { S, save } from '../../state.js';
 import { T } from '../../i18n.js';
-import { el, icon, gid } from '../../utils.js';
+import { el, icon, gid, isFilled } from '../../utils.js';
 import { mkHeader } from '../components/header.js';
 import { exportCSV } from '../../io/export.js';
 
@@ -29,7 +29,7 @@ export function rHome(renderFn) {
     var cardTitle = pd[2] + "-" + pd[1] + "-" + pd[0].slice(2) + "-" + (p.khuLienHop || "...");
     card.appendChild(el("div", { className: "card-title" }, cardTitle));
     var tongSoDiemDo = (p.diemDo || []).length;
-    var done = (p.diemDo || []).filter(function(d) { return d.kinh_do && d.vi_do && d.nguoi_th; }).length;
+    var done = (p.diemDo || []).filter(isFilled).length;
     var pct = tongSoDiemDo > 0 ? Math.round(done / tongSoDiemDo * 100) : 0;
     var pctColor = pct === 100 ? "var(--accent)" : pct > 0 ? "#e8a700" : "var(--muted)";
     var subRow = el("div", { style: { display: "flex", justifyContent: "space-between", marginTop: "2px" } });

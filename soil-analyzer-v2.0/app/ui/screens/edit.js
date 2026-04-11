@@ -1,6 +1,6 @@
 import { S, save } from '../../state.js';
 import { T } from '../../i18n.js';
-import { el, icon, gid } from '../../utils.js';
+import { el, icon, gid, isFilled } from '../../utils.js';
 import { mkHeader } from '../components/header.js';
 import { fi, sel } from '../components/fields.js';
 import { rVuon, rDiemDoDac } from '../components/cards.js';
@@ -97,13 +97,13 @@ export function rEdit(renderFn) {
     var apHeader = el("div", { style: { fontWeight: "700", fontSize: "13px", marginBottom: "6px" } });
     var apRows = {};  // keyed by d.id → DOM row
     function updAnchorPanel() {
-      var done = cp.diemDo.filter(function(d) { return d.kinh_do && d.vi_do && d.tuoi_nuoc && d.bon_phan; }).length;
+      var done = cp.diemDo.filter(function(d) { return isFilled(d); }).length;
       apHeader.textContent = T("chuyenThua") + " (" + String(done).padStart(2, "0") + "/" + String(cp.diemDo.length).padStart(2, "0") + ")";
       if (tcCount) tcCount.textContent = String(cp.diemDo.length);
       cp.diemDo.forEach(function(d) {
         var row = apRows[d.id];
         if (!row) return;
-        var isDone = d.kinh_do && d.vi_do && d.tuoi_nuoc && d.bon_phan;
+        var isDone = isFilled(d);
         var v2 = cp.vuonThua.find(function(x) { return x.id === d.vuon_id; });
         var lbl = d._manualZone ? ("Zone " + d._manualZone) : (v2 ? ((v2.nong_truong||"") + "/" + (v2.lo||"") + "/" + (v2.thua||"")) : "");
         row.textContent = lbl + (isDone ? " ✓" : "");
@@ -115,7 +115,7 @@ export function rEdit(renderFn) {
       var v = cp.vuonThua.find(function(x) { return x.id === d.vuon_id; });
       var label2 = d._manualZone ? ("Zone " + d._manualZone) : (v ? ((v.nong_truong || "") + "/" + (v.lo || "") + "/" + (v.thua || "")) : "");
       if (!label2) return;
-      var isDone = d.kinh_do && d.vi_do && d.tuoi_nuoc && d.bon_phan;
+      var isDone = isFilled(d);
       var row = el("div", { style: { padding: "8px 10px", cursor: "pointer", borderBottom: "1px solid var(--divider)", fontSize: "14px", color: isDone ? "var(--accent)" : "var(--cardText)" }, onClick: function() {
         var t = document.getElementById("diem-" + d.id);
         if (t) { t.scrollIntoView({ behavior: "smooth", block: "start" }); document.getElementById("anchor-panel").classList.add("hidden"); }

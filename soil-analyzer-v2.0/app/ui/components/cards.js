@@ -1,6 +1,6 @@
 import { S, save } from '../../state.js';
 import { T } from '../../i18n.js';
-import { el, icon, thuaName, dpName, pad } from '../../utils.js';
+import { el, icon, thuaName, dpName, pad, isFilled } from '../../utils.js';
 import { fi, sel, tog } from './fields.js';
 import { mkDiemExport } from '../../io/import.js';
 
@@ -71,7 +71,7 @@ export function rDiemDoDac(d, renderFn, onFillChange) {
   var cp = S.cp;
   var v = cp.vuonThua.find(function(x) { return x.id === d.vuon_id; });
   var name = d._manualZone ? ("Zone " + d._manualZone) : dpName(v, d.lan, d.do_lai);
-  var filled = d.kinh_do && d.vi_do && d.tuoi_nuoc && d.bon_phan;
+  var filled = isFilled(d);
 
   var isPinned = S.pinnedId === d.id;
   var isRetake = d.lan > 1;
@@ -100,7 +100,7 @@ export function rDiemDoDac(d, renderFn, onFillChange) {
   hdr.addEventListener("click", function() { col = !col; ct.style.display = col ? "none" : "block"; arrow.textContent = col ? "▸" : "▾"; });
 
   function updFilled() {
-    var nowFilled = d.kinh_do && d.vi_do && d.tuoi_nuoc && d.bon_phan;
+    var nowFilled = isFilled(d);
     card.style.opacity = nowFilled ? "0.45" : "1";
     var base = d._manualZone ? ("Zone " + d._manualZone) : dpName(v, d.lan, d.do_lai);
     titleSpan.textContent = base + (nowFilled ? " ✓" : "");
