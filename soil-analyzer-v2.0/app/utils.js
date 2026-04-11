@@ -34,6 +34,10 @@ export function thuaName(v) {
   return (v.nong_truong || "") + "/" + (v.lo || "") + "/" + (v.thua || "");
 }
 
+export function isFilled(d) {
+  return !!(d.kinh_do && d.vi_do && d.tuoi_nuoc && d.bon_phan);
+}
+
 export function dpName(v, lan, doLai) {
   var base = v ? thuaName(v) : "";
   if (doLai && lan >= 1) base += " - " + T("lan") + " " + lan;
