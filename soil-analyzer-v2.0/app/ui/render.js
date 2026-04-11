@@ -17,6 +17,17 @@ export function render() {
 load();
 render();
 
+// Warn before tab close / hard refresh when a session is open
+window.addEventListener("beforeunload", function(e) {
+  if (S.cp) { e.preventDefault(); e.returnValue = ""; }
+});
+
+// Prevent pull-to-refresh on mobile (overscroll-behavior via CSS is preferred,
+// but this JS guard catches browsers that ignore the CSS property)
+document.addEventListener("touchmove", function(e) {
+  if (window.scrollY === 0 && e.touches[0].clientY > 0) e.preventDefault();
+}, { passive: false });
+
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('./serviceWorker.js').catch(function() {});
 }
