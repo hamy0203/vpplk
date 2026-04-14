@@ -129,11 +129,13 @@ export function rDiemDoDac(d, renderFn, onFillChange) {
   var rg = el("div", { style: { display: "flex", gap: "8px", alignItems: "flex-end", marginTop: "4px" } });
   var dk = el("div", { className: "flex1" });
   dk.appendChild(el("label", { className: "label" }, T("kinhDo")));
-  dk.appendChild(fi(d.kinh_do, function(val) { d.kinh_do = val; updFilled(); }));
+  var kdInp = fi(d.kinh_do, function(val) { d.kinh_do = val; updFilled(); });
+  dk.appendChild(kdInp);
   rg.appendChild(dk);
   var dv = el("div", { className: "flex1" });
   dv.appendChild(el("label", { className: "label" }, T("viDo")));
-  dv.appendChild(fi(d.vi_do, function(val) { d.vi_do = val; updFilled(); }));
+  var vdInp = fi(d.vi_do, function(val) { d.vi_do = val; updFilled(); });
+  dv.appendChild(vdInp);
   rg.appendChild(dv);
   var gpsBtn = el("button", { className: "btn btn-p", style: { width: "auto", padding: "10px", marginTop: "0" }, onClick: function() {
     if (!navigator.geolocation) { alert("GPS N/A"); return; }
@@ -141,9 +143,14 @@ export function rDiemDoDac(d, renderFn, onFillChange) {
       var prevKD = d.kinh_do, prevVD = d.vi_do;
       d.kinh_do = pos.coords.longitude.toFixed(6);
       d.vi_do = pos.coords.latitude.toFixed(6);
+      kdInp.value = d.kinh_do; vdInp.value = d.vi_do;
       updFilled(); save();
       undoGps.style.display = "inline-block";
-      undoGps.onclick = function() { d.kinh_do = prevKD; d.vi_do = prevVD; updFilled(); save(); undoGps.style.display = "none"; };
+      undoGps.onclick = function() {
+        d.kinh_do = prevKD; d.vi_do = prevVD;
+        kdInp.value = prevKD || ""; vdInp.value = prevVD || "";
+        updFilled(); save(); undoGps.style.display = "none";
+      };
     }, function(err) { alert("GPS: " + err.message); }, { enableHighAccuracy: true, timeout: 10000 });
   }});
   gpsBtn.appendChild(icon("pin"));
