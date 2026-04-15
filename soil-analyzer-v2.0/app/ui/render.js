@@ -12,6 +12,7 @@ export function render() {
   else if (S.screen === "create") app.appendChild(rCreate(render));
   else if (S.screen === "edit") app.appendChild(rEdit(render));
   else if (S.screen === "view") app.appendChild(rView(render));
+  scrollToPinned();
 }
 
 load();
@@ -20,6 +21,20 @@ render();
 // Warn before tab close / hard refresh when a session is open
 window.addEventListener("beforeunload", function(e) {
   if (S.cp) { e.preventDefault(); e.returnValue = ""; }
+});
+
+function scrollToPinned() {
+  if (!S.pinnedId) return;
+  var t = document.getElementById("diem-" + S.pinnedId);
+  if (!t) return;
+  var hdr = document.querySelector(".header");
+  var prog = document.querySelector(".progress");
+  var offset = (hdr ? hdr.offsetHeight : 0) + (prog ? prog.offsetHeight : 0) + 8;
+  window.scrollTo({ top: t.getBoundingClientRect().top + window.scrollY - offset, behavior: "smooth" });
+}
+
+document.addEventListener("visibilitychange", function() {
+  if (document.visibilityState === "visible") scrollToPinned();
 });
 
 if ('serviceWorker' in navigator) {
