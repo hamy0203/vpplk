@@ -31,7 +31,7 @@ export function rVuon(v, renderFn) {
   var titleSpan = el("span", { style: { fontWeight: "600" } }, thuaName(v) || T("tenThua"));
   hdr.appendChild(titleSpan);
   function updTitle() { titleSpan.textContent = thuaName(v) || T("tenThua"); }
-  var col = v._collapsed || false;
+  var col = v._collapsed !== false;
   var arrow = el("span", { style: { fontSize: "18px" } }, col ? "▸" : "▾");
   hdr.appendChild(arrow);
   var ct = el("div", { style: { marginTop: "8px", display: col ? "none" : "block" } });
@@ -93,10 +93,10 @@ export function rDiemDoDac(d, renderFn, onFillChange) {
 
   var titleSpan = el("span", { style: { fontWeight: "600", fontSize: "13px" } }, name + (filled ? " ✓" : ""));
   hdr.appendChild(titleSpan);
-  var arrow = el("span", { style: { fontSize: "18px" } }, "▾");
+  var arrow = el("span", { style: { fontSize: "18px" } }, "▸");
   hdr.appendChild(arrow);
-  var ct = el("div", { style: { marginTop: "8px" } });
-  var col = false;
+  var ct = el("div", { style: { marginTop: "8px", display: "none" } });
+  var col = true;
   hdr.addEventListener("click", function() { col = !col; ct.style.display = col ? "none" : "block"; arrow.textContent = col ? "▸" : "▾"; });
 
   function updFilled() {
@@ -282,19 +282,17 @@ export function rDiemDoDac(d, renderFn, onFillChange) {
   ct.appendChild(el("label", { className: "label" }, T("ghiChu")));
   ct.appendChild(fi(d.ghi_chu, function(val) { d.ghi_chu = val; }));
 
-  if (d._manualZone) {
-    ct.appendChild(el("button", { className: "danger-link", onClick: function() {
-      cp.diemDo = cp.diemDo.filter(function(x) { return x.id !== d.id; });
-      renderFn(); save();
-    }}, T("xoaDiem")));
-  } else if (d.lan > 1) {
-    ct.appendChild(el("button", { className: "danger-link", onClick: function() {
-      var parent = cp.diemDo.find(function(x) { return x.vuon_id === d.vuon_id && x.lan === d.lan - 1; });
-      if (parent) parent.do_lai = false;
-      cp.diemDo = cp.diemDo.filter(function(x) { return x.id !== d.id; });
-      renderFn(); save();
-    }}, T("xoaDiem")));
-  }
+  ct.appendChild(el("button", { className: "danger-link", onClick: function() {
+    var parent = cp.diemDo.find(function(x) { return x.vuon_id === d.vuon_id && x.lan === d.lan - 1; });
+    if (parent) parent.do_lai = false;
+    // remove this card and entire chain below it
+    (function removeChain(entry) {
+      var next = cp.diemDo.find(function(x) { return x.vuon_id === entry.vuon_id && x.lan === entry.lan + 1; });
+      cp.diemDo = cp.diemDo.filter(function(x) { return x.id !== entry.id; });
+      if (next) removeChain(next);
+    })(d);
+    renderFn(); save();
+  }}, T("xoaDiem")));
 
   card.appendChild(hdr); card.appendChild(ct); return card;
 }
